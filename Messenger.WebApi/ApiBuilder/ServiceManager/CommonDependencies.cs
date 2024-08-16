@@ -1,8 +1,9 @@
-﻿using Messenger.WebApi.ApiBuilder.Other;
-using Messenger.Infrastructure.AuthOptions;
+﻿using Messenger.Infrastructure.AuthOptions;
 using Messenger.Persistence.DBContext;
+using Messenger.WebApi.ApiBuilder.Other;
 using Messenger.WebApi.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.WebApi.ApiBuilder.ServiceManager;
@@ -28,7 +29,7 @@ public static partial class ServiceManagerExtension
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => options.Config(config));
         serviceCollection.AddSwaggerGen(options => options.Config());
-        serviceCollection.AddDataProtection();
+        serviceCollection.AddDataProtection().PersistKeysToDbContext<EFContext>();
         serviceCollection.AddSignalR();
         serviceCollection.AddHttpClient();
 

@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Text.Json;
 using Messenger.Domain.Common;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

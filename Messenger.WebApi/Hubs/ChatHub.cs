@@ -1,8 +1,8 @@
-﻿using Messenger.WebApi.Hubs.Common;
-using Messenger.Application.Services.ChannelService;
+﻿using Messenger.Application.Services.ChannelService;
 using Messenger.Application.Services.ChannelService.Models;
 using Messenger.Application.Services.ChatService;
 using Messenger.Application.Services.ChatService.Models;
+using Messenger.WebApi.Hubs.Common;
 using Messenger.WebApi.Hubs.Models.Chat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;

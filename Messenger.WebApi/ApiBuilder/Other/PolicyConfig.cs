@@ -9,7 +9,8 @@ public static class PolicyConfigExtension
     private static readonly string[] s_allowOrigins =
     [
         "http://localhost:3000",
-        "https://localhost:3000"
+        "https://localhost:3000",
+        "http://147.45.78.164:3000",
     ];
 
     public static void PolicyConfig(this AuthorizationOptions authorizationOptions)

@@ -5,12 +5,14 @@ using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Entities.RefreshTokens;
 using Messenger.Domain.Entities.Users;
 using Messenger.Persistence.EntityConfigurations;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Persistence.DBContext;
 
-public class EFContext : DbContext
+public class EFContext : DbContext, IDataProtectionKeyContext
 {
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Admin> Admins { get; set; }

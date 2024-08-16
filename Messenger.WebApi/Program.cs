@@ -1,8 +1,12 @@
 ﻿using Messenger.WebApi.ApiBuilder.ApplicationBuilder;
 using Messenger.WebApi.ApiBuilder.LoggingBuilder;
 using Messenger.WebApi.ApiBuilder.ServiceManager;
+using Messenger.WebApi.Common;
+
+AppEnvironment.LoadEnvironments();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
 ConfigurationManager config = builder.Configuration;
 
 builder.Services.AddConfigurationDependencies(config);

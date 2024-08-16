@@ -1,8 +1,8 @@
 ﻿using Messenger.Application.Services.AccountService;
-using Messenger.Application.Services.UserService;
 using Messenger.Application.Services.AuthService;
 using Messenger.Application.Services.ChannelService;
 using Messenger.Application.Services.ChatService;
+using Messenger.Application.Services.UserService;
 using Messenger.Domain.Common;
 using Messenger.Domain.Services;
 using Messenger.Infrastructure.RabbitMQ;

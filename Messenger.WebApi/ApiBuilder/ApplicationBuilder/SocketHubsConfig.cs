@@ -1,5 +1,5 @@
-﻿using Messenger.WebApi.Hubs;
-using Messenger.Domain.Shared.Constants.Common;
+﻿using Messenger.Domain.Shared.Constants.Common;
+using Messenger.WebApi.Hubs;
 
 namespace Messenger.WebApi.ApiBuilder.ApplicationBuilder;
 

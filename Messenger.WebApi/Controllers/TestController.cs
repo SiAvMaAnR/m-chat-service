@@ -8,17 +8,10 @@ namespace Messenger.WebApi.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
-    private readonly IRabbitMQProducer _rabbitMQProducer;
-
-    public TestController(IRabbitMQProducer rabbitMQProducer)
-    {
-        _rabbitMQProducer = rabbitMQProducer;
-    }
-
     [HttpGet("rabbit-mq")]
-    public async Task<IActionResult> TestRabbitMQ()
+    public async Task<IActionResult> TestRabbitMQ(IRabbitMQProducer rabbitMQProducer)
     {
-        AIMessage? result = await _rabbitMQProducer.Emit<AIMessage>(
+        AIMessage? result = await rabbitMQProducer.Emit<AIMessage>(
             RMQ.Queue.Ai,
             RMQ.Pattern.CreateMessage,
             new
@@ -35,5 +28,11 @@ public class TestController : ControllerBase
         );
 
         return Ok(result);
+    }
+
+    [HttpGet("check")]
+    public IActionResult Check()
+    {
+        return Ok("OK");
     }
 }

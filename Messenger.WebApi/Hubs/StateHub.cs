@@ -1,7 +1,7 @@
-﻿using Messenger.WebApi.Hubs.Common;
-using Messenger.Application.Services.AccountService;
+﻿using Messenger.Application.Services.AccountService;
 using Messenger.Application.Services.AccountService.Models;
 using Messenger.Domain.Shared.Constants.Common;
+using Messenger.WebApi.Hubs.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Messenger.WebApi.Hubs;
