@@ -1,6 +1,5 @@
-﻿using Messenger.Infrastructure.AuthOptions;
+﻿using Messenger.Application.Common;
 using Messenger.Persistence.DBContext;
-using Messenger.WebApi.ApiBuilder.Other;
 using Messenger.WebApi.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
@@ -23,7 +22,7 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddHttpContextAccessor();
         serviceCollection.AddLogging();
-        serviceCollection.AddCors(options => options.CorsConfig());
+        serviceCollection.AddCors(options => options.CorsConfig(config));
         serviceCollection.AddAuthorization(options => options.PolicyConfig());
         serviceCollection
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

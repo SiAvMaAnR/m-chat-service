@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Shared.Settings;
+using Messenger.Infrastructure.AppSettings;
 using NReco.Logging.File;
 
 namespace Messenger.WebApi.ApiBuilder.LoggingBuilder;
@@ -10,9 +11,7 @@ public static partial class LoggingBuilderExtension
         IConfiguration configuration
     )
     {
-        var filePathSettings = new FilePathSettings();
-
-        configuration.GetSection(FilePathSettings.Path).Bind(filePathSettings);
+        FilePathSettings filePathSettings = AppSettings.GetSection<FilePathSettings>(configuration);
 
         loggingBuilder.ClearProviders();
         loggingBuilder.AddConsole();

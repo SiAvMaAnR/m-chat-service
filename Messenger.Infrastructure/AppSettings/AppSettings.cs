@@ -1,5 +1,7 @@
 ﻿using Messenger.Domain.Common;
+using Messenger.Domain.Exceptions;
 using Messenger.Domain.Shared.Settings;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace Messenger.Infrastructure.AppSettings;
@@ -21,4 +23,15 @@ public class AppSettings(
     public ClientSettings Client { get; } = clientSettings.Value;
     public AuthSettings Auth { get; } = authSettings.Value;
     public RMQSettings RMQ { get; } = rmqSettings.Value;
+
+    public static TSection GetSection<TSection>(IConfiguration configuration)
+        where TSection : ISettings
+    {
+        TSection? section = configuration.GetSection(TSection.Path).Get<TSection>();
+
+        if (section == null)
+            throw new IncorrectDataException($"Incorrect config ({TSection.Path})", true);
+
+        return section;
+    }
 }

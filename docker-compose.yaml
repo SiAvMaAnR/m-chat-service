@@ -12,7 +12,7 @@ services:
       SMTP__PASSWORD: "dasirmpudrndcqsj"
       SMTP__HOST: "smtp.gmail.com"
       SMTP__PORT: 587
-      CLIENT__BASEURL: "http://localhost:3000"
+      CLIENT__BASEURL: "http://147.45.78.164:3000"
     ports:
       - "8080:8080"
     depends_on:

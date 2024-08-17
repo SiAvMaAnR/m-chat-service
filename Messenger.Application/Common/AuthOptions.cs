@@ -2,28 +2,22 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Messenger.Domain.Exceptions;
 using Messenger.Domain.Shared.Constants.Common;
 using Messenger.Domain.Shared.Settings;
+using Messenger.Infrastructure.AppSettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Messenger.Infrastructure.AuthOptions;
+namespace Messenger.Application.Common;
 
 public static class AuthOptions
 {
     public static void Config(this JwtBearerOptions options, IConfiguration configuration)
     {
-        var commonSettings = new CommonSettings();
-        var authSettings = new AuthSettings();
-
-        configuration.GetSection(CommonSettings.Path).Bind(commonSettings);
-        configuration.GetSection(AuthSettings.Path).Bind(authSettings);
-
-        if (configuration == null)
-            throw new IncorrectDataException("Incorrect config", true);
+        CommonSettings commonSettings = AppSettings.GetSection<CommonSettings>(configuration);
+        AuthSettings authSettings = AppSettings.GetSection<AuthSettings>(configuration);
 
         string? issuer = authSettings.Issuer;
         string? audience = authSettings.Audience;

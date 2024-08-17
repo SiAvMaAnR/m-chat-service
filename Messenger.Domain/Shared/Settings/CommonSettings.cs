@@ -1,7 +1,8 @@
 ﻿namespace Messenger.Domain.Shared.Settings;
 
-public class CommonSettings
+public class CommonSettings : ISettings
 {
-    public const string Path = "Common";
+    public static string Path => "Common";
+
     public string SecretKey { get; set; } = null!;
 }

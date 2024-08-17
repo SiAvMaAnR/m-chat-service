@@ -1,4 +1,5 @@
 ﻿using Messenger.Domain.Shared.Settings;
+using Messenger.Infrastructure.AppSettings;
 using Messenger.Notifications.Email;
 using Messenger.Notifications.Email.Models;
 
@@ -11,9 +12,7 @@ public static partial class ServiceManagerExtension
         IConfiguration configuration
     )
     {
-        var smtpSettings = new SmtpSettings();
-
-        configuration.GetSection(SmtpSettings.Path).Bind(smtpSettings);
+        SmtpSettings smtpSettings = AppSettings.GetSection<SmtpSettings>(configuration);
 
         serviceCollection.AddSingleton<IEmailClient>(
             new EmailClient(

@@ -1,17 +1,14 @@
 ﻿using Messenger.Domain.Shared.Constants.Common;
+using Messenger.Domain.Shared.Settings;
+using Messenger.Infrastructure.AppSettings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 
-namespace Messenger.WebApi.ApiBuilder.Other;
+namespace Messenger.WebApi.ApiBuilder.ServiceManager;
 
 public static class PolicyConfigExtension
 {
-    private static readonly string[] s_allowOrigins =
-    [
-        "http://localhost:3000",
-        "https://localhost:3000",
-        "http://147.45.78.164:3000",
-    ];
+    private static readonly string[] s_allowOrigins = ["http://localhost:3000"];
 
     public static void PolicyConfig(this AuthorizationOptions authorizationOptions)
     {
@@ -23,16 +20,16 @@ public static class PolicyConfigExtension
         );
     }
 
-    public static void CorsConfig(this CorsOptions corsOptions)
+    public static void CorsConfig(this CorsOptions corsOptions, IConfiguration configuration)
     {
+        ClientSettings clientSettings = AppSettings.GetSection<ClientSettings>(configuration);
+
+        string[] origins = s_allowOrigins.Concat([clientSettings.BaseUrl]).ToArray();
+
         corsOptions.AddPolicy(
             CorsPolicyName.Default,
             policy =>
-                policy
-                    .WithOrigins(s_allowOrigins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials()
+                policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
         );
     }
 }

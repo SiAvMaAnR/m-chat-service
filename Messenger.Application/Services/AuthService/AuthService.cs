@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Messenger.Application.Common;
 using Messenger.Application.Services.AuthService.Models;
 using Messenger.Application.Services.Common;
 using Messenger.Domain.Common;
@@ -8,7 +9,6 @@ using Messenger.Domain.Entities.Users;
 using Messenger.Domain.Exceptions;
 using Messenger.Domain.Services;
 using Messenger.Domain.Shared.Models;
-using Messenger.Infrastructure.AuthOptions;
 using Messenger.Notifications.Common;
 using Messenger.Notifications.Email;
 using Messenger.Notifications.Email.Models;

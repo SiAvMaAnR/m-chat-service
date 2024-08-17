@@ -1,8 +1,8 @@
 ﻿namespace Messenger.Domain.Shared.Settings;
 
-public class RoutePathSettings
+public class RoutePathSettings : ISettings
 {
-    public const string Path = "RoutePath";
+    public static string Path => "RoutePath";
 
     public string ConfirmRegistration { get; set; } = null!;
     public string ResetToken { get; set; } = null!;
