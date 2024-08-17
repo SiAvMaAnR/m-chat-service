@@ -6,5 +6,9 @@ namespace Messenger.Persistence.EntityConfigurations;
 
 internal class ChannelConfiguration : IEntityTypeConfiguration<Channel>
 {
-    public void Configure(EntityTypeBuilder<Channel> builder) { }
+    public void Configure(EntityTypeBuilder<Channel> builder)
+    {
+        builder.HasIndex(channel => channel.Type);
+        builder.HasIndex(channel => channel.Name);
+    }
 }

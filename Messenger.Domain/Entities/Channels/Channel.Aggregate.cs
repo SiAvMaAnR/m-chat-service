@@ -21,6 +21,11 @@ public partial class Channel : IAggregateRoot
         Messages.Add(message);
     }
 
+    public void SetOwner(int ownerId)
+    {
+        OwnerId = ownerId;
+    }
+
     public Message? GetLastMessage()
     {
         return Messages.OrderByDescending(message => message.CreatedAt).FirstOrDefault();

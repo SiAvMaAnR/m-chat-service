@@ -139,17 +139,26 @@ namespace Messenger.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("Type");
 
                     b.ToTable("Channels");
                 });
@@ -309,6 +318,15 @@ namespace Messenger.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Messenger.Domain.Entities.Channels.Channel", b =>
+                {
+                    b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Owner")
+                        .WithMany("OwnedChannels")
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Messenger.Domain.Entities.Messages.Message", b =>
                 {
                     b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Author")
@@ -348,6 +366,8 @@ namespace Messenger.Persistence.Migrations
             modelBuilder.Entity("Messenger.Domain.Entities.Accounts.Account", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("OwnedChannels");
 
                     b.Navigation("RefreshTokens");
                 });

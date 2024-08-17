@@ -31,7 +31,12 @@ public partial class Account : BaseEntity
 
     [JsonIgnore]
     public byte[] PasswordSalt { get; private set; }
-    public ICollection<Channel> Channels { get; set; } = [];
+
+    [InverseProperty("Accounts")]
+    public ICollection<Channel> Channels { get; private set; } = [];
+
+    [InverseProperty("Owner")]
+    public ICollection<Channel> OwnedChannels { get; private set; } = [];
 
     [InverseProperty("ReadAccounts")]
     public ICollection<Message> ReadMessages { get; private set; } = [];

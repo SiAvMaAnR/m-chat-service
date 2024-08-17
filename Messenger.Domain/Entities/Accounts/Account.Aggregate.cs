@@ -38,6 +38,11 @@ public partial class Account : IAggregateRoot
         Channels.Add(channel);
     }
 
+    public void AddOwnedChannel(Channel channel)
+    {
+        OwnedChannels.Add(channel);
+    }
+
     public void AddReadMessage(Message message)
     {
         ReadMessages.Add(message);

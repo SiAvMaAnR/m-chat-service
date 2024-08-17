@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Messenger.Persistence.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20240429171928_AddImageToChannel")]
-    partial class AddImageToChannel
+    [Migration("20240817151631_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -67,7 +67,7 @@ namespace Messenger.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Discriminator")
@@ -82,9 +82,12 @@ namespace Messenger.Persistence.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("LastOnlineAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -107,45 +110,15 @@ namespace Messenger.Persistence.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("Login");
+
                     b.HasIndex("Role");
 
                     b.ToTable("Accounts");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Account");
+                    b.HasDiscriminator().HasValue("Account");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Messenger.Domain.Entities.Accounts.RefreshTokens.RefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Messenger.Domain.Entities.Channels.Channel", b =>
@@ -156,21 +129,27 @@ namespace Messenger.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastActivity")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -178,10 +157,16 @@ namespace Messenger.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("Type");
+
                     b.ToTable("Channels");
                 });
 
-            modelBuilder.Entity("Messenger.Domain.Entities.Channels.Messages.Message", b =>
+            modelBuilder.Entity("Messenger.Domain.Entities.Messages.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -195,16 +180,16 @@ namespace Messenger.Persistence.Migrations
                     b.Property<int>("ChannelId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("ModifiedDate")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("TargetMessageId")
@@ -226,6 +211,57 @@ namespace Messenger.Persistence.Migrations
                     b.HasIndex("TargetMessageId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Messenger.Domain.Entities.RefreshTokens.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataProtectionKeys");
                 });
 
             modelBuilder.Entity("Messenger.Domain.Entities.Admins.Admin", b =>
@@ -278,25 +314,23 @@ namespace Messenger.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Messenger.Domain.Entities.Channels.Messages.Message", null)
+                    b.HasOne("Messenger.Domain.Entities.Messages.Message", null)
                         .WithMany()
                         .HasForeignKey("ReadMessagesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Messenger.Domain.Entities.Accounts.RefreshTokens.RefreshToken", b =>
+            modelBuilder.Entity("Messenger.Domain.Entities.Channels.Channel", b =>
                 {
-                    b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Account")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Owner")
+                        .WithMany("OwnedChannels")
+                        .HasForeignKey("OwnerId");
 
-                    b.Navigation("Account");
+                    b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Messenger.Domain.Entities.Channels.Messages.Message", b =>
+            modelBuilder.Entity("Messenger.Domain.Entities.Messages.Message", b =>
                 {
                     b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Author")
                         .WithMany("Messages")
@@ -310,7 +344,7 @@ namespace Messenger.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Messenger.Domain.Entities.Channels.Messages.Message", "TargetMessage")
+                    b.HasOne("Messenger.Domain.Entities.Messages.Message", "TargetMessage")
                         .WithMany("ChildMessages")
                         .HasForeignKey("TargetMessageId");
 
@@ -321,9 +355,22 @@ namespace Messenger.Persistence.Migrations
                     b.Navigation("TargetMessage");
                 });
 
+            modelBuilder.Entity("Messenger.Domain.Entities.RefreshTokens.RefreshToken", b =>
+                {
+                    b.HasOne("Messenger.Domain.Entities.Accounts.Account", "Account")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("Messenger.Domain.Entities.Accounts.Account", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("OwnedChannels");
 
                     b.Navigation("RefreshTokens");
                 });
@@ -333,7 +380,7 @@ namespace Messenger.Persistence.Migrations
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Messenger.Domain.Entities.Channels.Messages.Message", b =>
+            modelBuilder.Entity("Messenger.Domain.Entities.Messages.Message", b =>
                 {
                     b.Navigation("ChildMessages");
                 });
