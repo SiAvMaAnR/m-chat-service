@@ -1,8 +1,8 @@
-﻿namespace MessengerX.Domain.Shared.Settings;
+﻿namespace Messenger.Domain.Shared.Settings;
 
-public class FilePathSettings
+public class FilePathSettings : ISettings
 {
-    public const string Path = "FilePath";
+    public static string Path => "FilePath";
 
     public string Image { get; set; } = null!;
     public string Logger { get; set; } = null!;

@@ -1,7 +1,7 @@
-﻿namespace MessengerX.Domain.Shared.Settings;
+﻿namespace Messenger.Domain.Shared.Settings;
 
-public class ClientSettings
+public class ClientSettings : ISettings
 {
-    public const string Path = "Client";
+    public static string Path => "Client";
     public required string BaseUrl { get; set; }
 }

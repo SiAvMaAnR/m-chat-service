@@ -1,8 +1,8 @@
-﻿using MessengerX.Domain.Entities.Accounts;
-using MessengerX.Domain.Entities.Messages;
-using MessengerX.Domain.Shared.Constants.Common;
+﻿using Messenger.Domain.Entities.Accounts;
+using Messenger.Domain.Entities.Messages;
+using Messenger.Domain.Shared.Constants.Common;
 
-namespace MessengerX.Domain.Entities.Channels;
+namespace Messenger.Domain.Entities.Channels;
 
 public partial class Channel : IAggregateRoot
 {
@@ -19,6 +19,11 @@ public partial class Channel : IAggregateRoot
     public void AddMessage(Message message)
     {
         Messages.Add(message);
+    }
+
+    public void SetOwner(int ownerId)
+    {
+        OwnerId = ownerId;
     }
 
     public Message? GetLastMessage()

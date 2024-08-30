@@ -1,4 +1,6 @@
-﻿namespace MessengerX.WebApi.Common;
+﻿using dotenv.net;
+
+namespace Messenger.WebApi.Common;
 
 public static class AppEnvironment
 {
@@ -23,5 +25,10 @@ public static class AppEnvironment
             throw new Exception("Connection string is not correct (Redis)");
 
         return connectionString;
+    }
+
+    public static void LoadEnvironments()
+    {
+        DotEnv.Load();
     }
 }

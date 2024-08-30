@@ -1,8 +1,8 @@
-﻿namespace MessengerX.Domain.Shared.Settings;
+﻿namespace Messenger.Domain.Shared.Settings;
 
-public class SmtpSettings
+public class SmtpSettings : ISettings
 {
-    public const string Path = "Smtp";
+    public static string Path => "Smtp";
 
     public string Email { get; set; } = null!;
     public string Password { get; set; } = null!;

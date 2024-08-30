@@ -17,10 +17,6 @@
       "applicationUrl": "http://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DB_HOST": "localhost",
-        "DB_PORT": "1433",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "6379",
       }
     },
     "Messenger.Production": {
@@ -29,19 +25,7 @@
       "applicationUrl": "https://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
-        "DB_HOST": "localhost",
-        "DB_PORT": "1433",
-        "REDIS_HOST": "localhost",
-        "REDIS_PORT": "6379",
       }
     },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
-      }
-    }
   }
 }

@@ -1,10 +1,10 @@
-﻿using MessengerX.Domain.Common;
-using MessengerX.Domain.Entities.Accounts;
-using MessengerX.Domain.Entities.Channels;
-using MessengerX.Domain.Exceptions;
-using MessengerX.Domain.Shared.Constants.Common;
+﻿using Messenger.Domain.Common;
+using Messenger.Domain.Entities.Accounts;
+using Messenger.Domain.Entities.Channels;
+using Messenger.Domain.Exceptions;
+using Messenger.Domain.Shared.Constants.Common;
 
-namespace MessengerX.Domain.Services;
+namespace Messenger.Domain.Services;
 
 public class ChannelBS : DomainService
 {
@@ -56,11 +56,16 @@ public class ChannelBS : DomainService
             await _unitOfWork.Account.GetAsync(new AccountByIdSpec(accountId, true))
             ?? throw new NotExistsException("Account not found");
 
-        if (await _unitOfWork.Channel.AnyAsync(channel => channel.Name == channelName))
+        bool isExistsSameChannel = await _unitOfWork
+            .Channel
+            .AnyAsync(channel => channel.Name == channelName && channel.OwnerId == accountId);
+
+        if (isExistsSameChannel)
             throw new AlreadyExistsException("This channel name already exists");
 
         var channel = new Channel(ChannelType.Private) { Name = channelName };
 
+        channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
         IEnumerable<Account> accounts = await _unitOfWork
@@ -85,11 +90,16 @@ public class ChannelBS : DomainService
             await _unitOfWork.Account.GetAsync(new AccountByIdSpec(accountId, true))
             ?? throw new NotExistsException("Account not found");
 
-        if (await _unitOfWork.Channel.AnyAsync(channel => channel.Name == channelName))
+        bool isExistsSameChannel = await _unitOfWork
+            .Channel
+            .AnyAsync(channel => channel.Name == channelName && channel.OwnerId == accountId);
+
+        if (isExistsSameChannel)
             throw new AlreadyExistsException("This channel name already exists");
 
         var channel = new Channel(ChannelType.Public) { Name = channelName };
 
+        channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
         IEnumerable<Account> accounts = await _unitOfWork

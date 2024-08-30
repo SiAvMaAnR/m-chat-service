@@ -1,8 +1,8 @@
-﻿using MessengerX.Domain.Entities.Channels;
-using MessengerX.Domain.Entities.Messages;
-using MessengerX.Domain.Entities.RefreshTokens;
+﻿using Messenger.Domain.Entities.Channels;
+using Messenger.Domain.Entities.Messages;
+using Messenger.Domain.Entities.RefreshTokens;
 
-namespace MessengerX.Domain.Entities.Accounts;
+namespace Messenger.Domain.Entities.Accounts;
 
 public partial class Account : IAggregateRoot
 {
@@ -36,6 +36,11 @@ public partial class Account : IAggregateRoot
     public void AddChannel(Channel channel)
     {
         Channels.Add(channel);
+    }
+
+    public void AddOwnedChannel(Channel channel)
+    {
+        OwnedChannels.Add(channel);
     }
 
     public void AddReadMessage(Message message)
