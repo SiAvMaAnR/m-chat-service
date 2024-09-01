@@ -6,6 +6,7 @@ using Messenger.Application.Services.UserService;
 using Messenger.Domain.Common;
 using Messenger.Domain.Services;
 using Messenger.Infrastructure.RabbitMQ;
+using Messenger.Infrastructure.Services.NotificationsService;
 using Messenger.Persistence.UnitOfWork;
 
 namespace Messenger.WebApi.ApiBuilder.ServiceManager;
@@ -20,10 +21,11 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
         serviceCollection.AddScoped<IRabbitMQConsumer, RabbitMQConsumer>();
 
+        serviceCollection.AddScoped<INotificationsIS, NotificationsIS>();
+
         serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IAccountService, AccountService>();
         serviceCollection.AddScoped<IAuthService, AuthService>();
-        serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IChannelService, ChannelService>();
         serviceCollection.AddScoped<IChatService, ChatService>();
 

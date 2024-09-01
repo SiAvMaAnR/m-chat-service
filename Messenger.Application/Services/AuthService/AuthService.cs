@@ -9,10 +9,8 @@ using Messenger.Domain.Entities.Users;
 using Messenger.Domain.Exceptions;
 using Messenger.Domain.Services;
 using Messenger.Domain.Shared.Models;
-using Messenger.Notifications.Common;
-using Messenger.Notifications.Email;
-using Messenger.Notifications.Email.Models;
-using Messenger.Notifications.NotificationTemplates;
+using Messenger.Infrastructure.Services.NotificationsService;
+using Messenger.Infrastructure.Services.NotificationsService.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 
@@ -21,25 +19,25 @@ namespace Messenger.Application.Services.AuthService;
 public class AuthService : BaseService, IAuthService
 {
     private readonly IDataProtectionProvider _protection;
-    private readonly IEmailClient _emailClient;
     private readonly AuthBS _authBS;
     private readonly AccountBS _accountBS;
+    private readonly INotificationsIS _notificationsIS;
 
     public AuthService(
         IUnitOfWork unitOfWork,
         IHttpContextAccessor context,
         IAppSettings appSettings,
         IDataProtectionProvider protection,
-        IEmailClient emailClient,
         AuthBS authBS,
-        AccountBS accountBS
+        AccountBS accountBS,
+        INotificationsIS notificationsIS
     )
         : base(unitOfWork, context, appSettings)
     {
         _protection = protection;
-        _emailClient = emailClient;
         _authBS = authBS;
         _accountBS = accountBS;
+        _notificationsIS = notificationsIS;
     }
 
     public async Task<AuthServiceLoginResponse> LoginAsync(AuthServiceLoginRequest request)
@@ -130,19 +128,14 @@ public class AuthService : BaseService, IAuthService
 
         string resetPasswordLink = $"{baseUrl}/{path}?token={resetToken}";
 
-        string smtpEmail = _appSettings.Smtp.Email;
-
-        EmailTemplate template = NotificationTemplate.ResetToken(resetPasswordLink);
-
-        var message = new EmailMessage()
-        {
-            From = new EmailAddress(baseUrl, smtpEmail),
-            To = new EmailAddress(account.Login, account.Email),
-            Subject = template.Subject,
-            Content = template.Content
-        };
-
-        await _emailClient.SendAsync(message);
+        await _notificationsIS.SendEmail(
+            new NotificationsIServiceSendEmailRequest()
+            {
+                Template = EmailTemplate.ResetPassword,
+                Recipient = account.Email,
+                Data = new { recipientName = account.Login, resetPasswordLink }
+            }
+        );
 
         return new AuthServiceResetTokenResponse() { IsSuccess = true };
     }

@@ -8,6 +8,8 @@ public static class SwaggerExtension
 {
     public static SwaggerGenOptions Config(this SwaggerGenOptions options)
     {
+        options.SwaggerDoc("v1", new OpenApiInfo() { Version = "v1", Title = "Chat service API" });
+
         options.AddSecurityDefinition(
             "oauth2",
             new OpenApiSecurityScheme
@@ -17,16 +19,6 @@ public static class SwaggerExtension
                 Type = SecuritySchemeType.ApiKey
             }
         );
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
-        return options;
-    }
-
-    public static SwaggerGenOptions Config(
-        this SwaggerGenOptions options,
-        OpenApiSecurityScheme scheme
-    )
-    {
-        options.AddSecurityDefinition("oauth2", scheme);
         options.OperationFilter<SecurityRequirementsOperationFilter>();
         return options;
     }

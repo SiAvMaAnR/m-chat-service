@@ -11,7 +11,6 @@ ConfigurationManager config = builder.Configuration;
 
 builder.Services.AddConfigurationDependencies(config);
 builder.Services.AddCommonDependencies(config);
-builder.Services.AddNotificationDependencies(config);
 builder.Services.AddTransientDependencies();
 builder.Services.AddScopedDependencies();
 builder.Services.AddSingletonDependencies(config);

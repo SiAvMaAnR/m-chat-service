@@ -13,7 +13,7 @@ public class TestController : ControllerBase
     {
         AIMessage? result = await rabbitMQProducer.Emit<AIMessage>(
             RMQ.Queue.Ai,
-            RMQ.Pattern.CreateMessage,
+            RMQ.AIQueuePattern.CreateMessage,
             new
             {
                 message = new { content = "Кто такой цицерон?", role = "user" },
