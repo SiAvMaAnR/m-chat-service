@@ -8,7 +8,6 @@ namespace Messenger.Infrastructure.AppSettings;
 
 public class AppSettings(
     IOptions<CommonSettings> commonSettings,
-    IOptions<SmtpSettings> smtpSettings,
     IOptions<RoutePathSettings> routePathSettings,
     IOptions<FilePathSettings> filePathSettings,
     IOptions<ClientSettings> clientSettings,
@@ -17,7 +16,6 @@ public class AppSettings(
 ) : IAppSettings
 {
     public CommonSettings Common { get; } = commonSettings.Value;
-    public SmtpSettings Smtp { get; } = smtpSettings.Value;
     public RoutePathSettings RoutePath { get; } = routePathSettings.Value;
     public FilePathSettings FilePath { get; } = filePathSettings.Value;
     public ClientSettings Client { get; } = clientSettings.Value;
