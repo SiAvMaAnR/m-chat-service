@@ -7,10 +7,8 @@ using Messenger.Domain.Entities.Users;
 using Messenger.Domain.Exceptions;
 using Messenger.Domain.Services;
 using Messenger.Domain.Shared.Models;
-using Messenger.Notifications.Common;
-using Messenger.Notifications.Email;
-using Messenger.Notifications.Email.Models;
-using Messenger.Notifications.NotificationTemplates;
+using Messenger.Infrastructure.Services.NotificationsService;
+using Messenger.Infrastructure.Services.NotificationsService.Models;
 using Messenger.Persistence.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -20,22 +18,22 @@ namespace Messenger.Application.Services.UserService;
 public class UserService : BaseService, IUserService
 {
     private readonly IDataProtectionProvider _protection;
-    private readonly IEmailClient _emailClient;
     private readonly UserBS _userBS;
+    private readonly INotificationsIS _notificationsIS;
 
     public UserService(
         IUnitOfWork unitOfWork,
         IHttpContextAccessor context,
         IAppSettings appSettings,
         IDataProtectionProvider protection,
-        IEmailClient emailClient,
-        UserBS userBS
+        UserBS userBS,
+        INotificationsIS notificationsIS
     )
         : base(unitOfWork, context, appSettings)
     {
         _protection = protection;
-        _emailClient = emailClient;
         _userBS = userBS;
+        _notificationsIS = notificationsIS;
     }
 
     public async Task<UserServiceRegistrationResponse> RegistrationAsync(
@@ -67,19 +65,14 @@ public class UserService : BaseService, IUserService
 
         string confirmationLink = $"{baseUrl}/{path}?code={confirmation}";
 
-        string smtpEmail = _appSettings.Smtp.Email;
-
-        EmailTemplate template = NotificationTemplate.Registration(confirmationLink);
-
-        var message = new EmailMessage()
-        {
-            From = new EmailAddress(baseUrl, smtpEmail),
-            To = new EmailAddress(request.Login, request.Email),
-            Subject = template.Subject,
-            Content = template.Content
-        };
-
-        await _emailClient.SendAsync(message);
+        await _notificationsIS.SendEmail(
+            new NotificationsIServiceSendEmailRequest()
+            {
+                Template = EmailTemplate.ConfirmRegistration,
+                Recipient = request.Email,
+                Data = new { recipientName = request.Login, confirmationLink }
+            }
+        );
 
         return new UserServiceRegistrationResponse() { IsSuccess = true };
     }
