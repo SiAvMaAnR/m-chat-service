@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Entities.Accounts;
 using Messenger.Domain.Entities.Admins;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Channels;
 using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Entities.RefreshTokens;
@@ -18,7 +19,8 @@ public class EFContext : DbContext, IDataProtectionKeyContext
     public DbSet<Admin> Admins { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Channel> Channels { get; set; }
-    public DbSet<Message> Message { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<Attachment> Attachments { get; set; }
 
     public EFContext(DbContextOptions<EFContext> options)
         : base(options)
@@ -36,6 +38,7 @@ public class EFContext : DbContext, IDataProtectionKeyContext
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         modelBuilder.ApplyConfiguration(new ChannelConfiguration());
         modelBuilder.ApplyConfiguration(new MessageConfiguration());
+        modelBuilder.ApplyConfiguration(new AttachmentConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

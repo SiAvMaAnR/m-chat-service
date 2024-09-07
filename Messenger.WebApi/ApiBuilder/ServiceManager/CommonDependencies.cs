@@ -29,7 +29,12 @@ public static partial class ServiceManagerExtension
             .AddJwtBearer(options => options.Config(config));
         serviceCollection.AddSwaggerGen(options => options.Config());
         serviceCollection.AddDataProtection().PersistKeysToDbContext<EFContext>();
-        serviceCollection.AddSignalR();
+        serviceCollection.AddSignalR(
+            (options) =>
+            {
+                options.MaximumReceiveMessageSize = 25000000;
+            }
+        );
         serviceCollection.AddHttpClient();
 
         return serviceCollection;

@@ -8,11 +8,10 @@ services:
       CONNECTIONSTRINGS__REDISCONNECTION: "redis:6379"
       CONNECTIONSTRINGS__DBCONNECTION: "Data Source=database-mssql,1433;Initial Catalog=Messenger;User Id=sa;Password=SecretPassword161;TrustServerCertificate=True"
       COMMON__SECRETKEY: "secret_key_88002353535_161"
-      SMTP__EMAIL: "samarkin20022002@gmail.com"
-      SMTP__PASSWORD: "dasirmpudrndcqsj"
-      SMTP__HOST: "smtp.gmail.com"
-      SMTP__PORT: 587
       CLIENT__BASEURL: "http://147.45.78.164:3000"
+      RMQ__HOSTNAME: "rabbitmq"
+      RMQ__USERNAME: "guest"
+      RMQ__PASSWORD: "guest"
     ports:
       - "8080:8080"
     depends_on:

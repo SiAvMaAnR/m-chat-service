@@ -9,32 +9,30 @@ internal static partial class DefaultUsersSeed
 {
     public static void CreateUsers(EFContext eFContext)
     {
-        if (eFContext.Users.Any())
+        if (!eFContext.Users.Any())
         {
-            throw new InvalidOperationException("Users already exists");
-        }
-
-        var users = new[]
-        {
-            new
+            var users = new[]
             {
-                Email = "user@user.com",
-                Login = "User",
-                Password = "Sosnova61S"
-            }
-        };
-
-        IEnumerable<User> userList = users.Select(user =>
-        {
-            Password password = AuthBS.CreatePasswordHash(user.Password);
-
-            return new User(user.Email, user.Login, password.Hash, password.Salt)
-            {
-                Birthday = new DateOnly(2002, 1, 9)
+                new
+                {
+                    Email = "user@user.com",
+                    Login = "User",
+                    Password = "Sosnova61S"
+                }
             };
-        });
 
-        eFContext.Users.AddRange(userList);
-        eFContext.SaveChanges();
+            IEnumerable<User> userList = users.Select(user =>
+            {
+                Password password = AuthBS.CreatePasswordHash(user.Password);
+
+                return new User(user.Email, user.Login, password.Hash, password.Salt)
+                {
+                    Birthday = new DateOnly(2002, 1, 9)
+                };
+            });
+
+            eFContext.Users.AddRange(userList);
+            eFContext.SaveChanges();
+        }
     }
 }

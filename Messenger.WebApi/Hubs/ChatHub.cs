@@ -42,7 +42,8 @@ public class ChatHub(IChatService chatService, IChannelService channelService) :
             new ChatServiceSendMessageRequest()
             {
                 ChannelId = request.ChannelId,
-                Message = request.Message
+                Message = request.Message,
+                Attachments = request.Attachments
             }
         );
 

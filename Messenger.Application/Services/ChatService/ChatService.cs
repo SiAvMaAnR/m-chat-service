@@ -1,7 +1,9 @@
 ﻿using Messenger.Application.Services.ChatService.Adapters;
+using Messenger.Application.Services.ChatService.Extensions;
 using Messenger.Application.Services.ChatService.Models;
 using Messenger.Application.Services.Common;
 using Messenger.Domain.Common;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -32,15 +34,16 @@ public class ChatService : BaseService, IChatService
 
         PaginatorResponse<Message> paginatedData = messages.Pagination(request.Pagination);
 
-        var adaptedMessages = paginatedData
+        IEnumerable<Task<ChatServiceMessageAdapter>> adaptedMessagesTasks = paginatedData
             .Collection
-            .Select(message => new ChatServiceMessageAdapter(message))
-            .ToList();
+            .Select(message => new ChatServiceMessageAdapter(message).LoadAttachmentsAsync());
+
+        ChatServiceMessageAdapter[] messagesResult = await Task.WhenAll(adaptedMessagesTasks);
 
         return new ChatServiceMessagesResponse()
         {
             Meta = paginatedData.Meta,
-            Messages = adaptedMessages
+            Messages = messagesResult
         };
     }
 
@@ -48,20 +51,25 @@ public class ChatService : BaseService, IChatService
         ChatServiceSendMessageRequest request
     )
     {
-        var message = new Message(UserId, request.ChannelId) { Text = request.Message };
+        Attachment[] attachments = await request.Attachments.ProcessAttachmentsAsync(_appSettings);
 
-        await _chatBS.AddMessageAsync(request.ChannelId, message);
+        Message message = await _chatBS.AddMessageAsync(
+            UserId,
+            request.ChannelId,
+            request.Message,
+            attachments.ToList()
+        );
 
         IEnumerable<string> userIds = await _chatBS.GetUserIdsByChannelIdAsync(
             UserId,
             request.ChannelId
         );
 
-        return new ChatServiceSendMessageResponse()
-        {
-            UserIds = userIds,
-            Message = new ChatServiceMessageAdapter(message)
-        };
+        var adaptedMessage = new ChatServiceMessageAdapter(message);
+
+        await adaptedMessage.LoadAttachmentsAsync();
+
+        return new ChatServiceSendMessageResponse() { UserIds = userIds, Message = adaptedMessage };
     }
 
     public async Task<ChatServiceReadMessageResponse> ReadMessageAsync(
