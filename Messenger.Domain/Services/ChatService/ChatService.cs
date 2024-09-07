@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Common;
 using Messenger.Domain.Entities.Accounts;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Channels;
 using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Exceptions;
@@ -54,7 +55,7 @@ public class ChatBS : DomainService
 
         foreach (Message message in unreadMessages)
         {
-            message.ReadMessage();
+            message.Read();
             message.AddReadAccounts(account);
         }
 
@@ -65,11 +66,20 @@ public class ChatBS : DomainService
         return readMessages;
     }
 
-    public async Task AddMessageAsync(int channelId, Message message)
+    public async Task<Message> AddMessageAsync(
+        int authorId,
+        int channelId,
+        string messageText,
+        List<Attachment> attachments
+    )
     {
+        var message = new Message(authorId, channelId) { Text = messageText };
+
+        message.AddAttachments(attachments);
+
         Channel? channel = await _unitOfWork
             .Channel
-            .GetAsync(new AccountChannelSpec(message.AuthorId, channelId));
+            .GetAsync(new AccountChannelSpec(authorId, channelId));
 
         if (channel == null)
             throw new NotExistsException("Channel not exists");
@@ -78,6 +88,8 @@ public class ChatBS : DomainService
         channel.UpdateLastActivity();
 
         await _unitOfWork.SaveChangesAsync();
+
+        return message;
     }
 
     public async Task<IEnumerable<string>> GetUserIdsByChannelIdAsync(int accountId, int channelId)

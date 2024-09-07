@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Entities.Accounts;
 using Messenger.Domain.Entities.Admins;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Channels;
 using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Entities.RefreshTokens;
@@ -19,4 +20,5 @@ public partial class UnitOfWork(EFContext eFContext)
     public IRefreshTokenRepository RefreshToken { get; } = new RefreshTokenRepository(eFContext);
     public IMessageRepository Message { get; } = new MessageRepository(eFContext);
     public IChannelRepository Channel { get; } = new ChannelRepository(eFContext);
+    public IAttachmentRepository Attachment { get; } = new AttachmentRepository(eFContext);
 }

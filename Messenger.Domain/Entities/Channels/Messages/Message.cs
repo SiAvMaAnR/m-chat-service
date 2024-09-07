@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Messenger.Domain.Entities.Accounts;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Channels;
 
 namespace Messenger.Domain.Entities.Messages;
@@ -27,4 +28,5 @@ public partial class Message : BaseEntity, ISoftDelete
     public int? TargetMessageId { get; set; }
     public Channel? Channel { get; private set; }
     public int ChannelId { get; private set; }
+    public ICollection<Attachment> Attachments { get; } = [];
 }
