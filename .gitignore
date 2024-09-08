@@ -1,7 +1,8 @@
 .vs/*
-.vscode/*
+.vscode/
 .config/*
-.meta/*
+.meta/
+.logs/
 
 **/*.log
 **/bin/*
@@ -10,3 +11,5 @@
 **/*.env
 **/Uploads/*
 **/tasks.md
+
+uploads/

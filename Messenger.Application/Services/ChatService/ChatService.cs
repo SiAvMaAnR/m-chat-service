@@ -1,4 +1,5 @@
-﻿using Messenger.Application.Services.ChatService.Adapters;
+﻿using System.Diagnostics;
+using Messenger.Application.Services.ChatService.Adapters;
 using Messenger.Application.Services.ChatService.Extensions;
 using Messenger.Application.Services.ChatService.Models;
 using Messenger.Application.Services.Common;
