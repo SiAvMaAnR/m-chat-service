@@ -30,28 +30,28 @@ public class ChatServiceMessageAdapter : ChatServiceMessageResponseData
             .Attachments
             .Select(async attachment =>
             {
-                await _semaphore.WaitAsync();
+                string contentBase64 = string.Empty;
+
                 try
                 {
                     byte[] contentBytes =
                         await FileManager.ReadToBytesAsync(attachment.Content) ?? [];
 
-                    string contentBase64 = Convert.ToBase64String(contentBytes);
+                    contentBase64 = Convert.ToBase64String(contentBytes);
+                }
+                catch { }
 
-                    return new ChatServiceAttachmentResponse()
-                    {
-                        Id = attachment.Id,
-                        Content = contentBase64,
-                        Type = attachment.Type,
-                    };
-                }
-                finally
+                return new ChatServiceAttachmentResponse()
                 {
-                    _semaphore.Release();
-                }
+                    Id = attachment.Id,
+                    Content = contentBase64,
+                    Type = attachment.Type,
+                };
             });
 
-        Attachments = await Task.WhenAll(attachmentsTasks);
+        Attachments = (await Task.WhenAll(attachmentsTasks)).Where(
+            attachment => !string.IsNullOrEmpty(attachment.Content)
+        );
 
         return this;
     }

@@ -24,11 +24,17 @@ public static class FileManager
 
     public static async Task<byte[]?> ReadToBytesAsync(string? path)
     {
-        return path != null ? await File.ReadAllBytesAsync(path) : null;
+        if (path == null || !File.Exists(path))
+            return null;
+
+        return await File.ReadAllBytesAsync(path);
     }
 
     public static byte[]? ReadToBytes(string? path)
     {
-        return path != null ? File.ReadAllBytes(path) : null;
+        if (path == null || !File.Exists(path))
+            return null;
+
+        return File.ReadAllBytes(path);
     }
 }
