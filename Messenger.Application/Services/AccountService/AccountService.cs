@@ -39,9 +39,14 @@ public class AccountService : BaseService, IAccountService
         using (var stream = new MemoryStream())
         {
             request.File.CopyTo(stream);
-            string? image = await stream.ToArray().WriteToFileAsync(imagePath, account.Email);
 
-            await _accountBS.UpdateImageAsync(account, image);
+            string? imageBase64 = await FileManager.WriteToFileAsync(
+                stream.ToArray(),
+                imagePath,
+                account.Email
+            );
+
+            await _accountBS.UpdateImageAsync(account, imageBase64);
         }
 
         return new AccountServiceUploadImageResponse() { IsSuccess = true };

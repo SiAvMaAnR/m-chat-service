@@ -70,12 +70,16 @@ public class ChatBS : DomainService
         int authorId,
         int channelId,
         string messageText,
-        List<Attachment> attachments
+        IEnumerable<string> attachmentIds
     )
     {
         var message = new Message(authorId, channelId) { Text = messageText };
 
-        message.AddAttachments(attachments);
+        IEnumerable<Attachment> attachments = await _unitOfWork
+            .Attachment
+            .GetAllAsync(new AttachmentsByUniqueIdsSpec(attachmentIds));
+
+        message.AddAttachments(attachments.ToList());
 
         Channel? channel = await _unitOfWork
             .Channel

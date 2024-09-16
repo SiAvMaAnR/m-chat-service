@@ -1,5 +1,6 @@
 ﻿using Messenger.Domain.Entities.Accounts;
 using Messenger.Domain.Entities.Admins;
+using Messenger.Domain.Entities.Attachments;
 using Messenger.Domain.Entities.Channels;
 using Messenger.Domain.Entities.Messages;
 using Messenger.Domain.Entities.RefreshTokens;
@@ -15,4 +16,5 @@ public partial interface IUnitOfWork
     IRefreshTokenRepository RefreshToken { get; }
     IChannelRepository Channel { get; }
     IMessageRepository Message { get; }
+    IAttachmentRepository Attachment { get; }
 }

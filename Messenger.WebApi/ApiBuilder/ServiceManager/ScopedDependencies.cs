@@ -35,6 +35,7 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddScoped<AdminBS>();
         serviceCollection.AddScoped<ChannelBS>();
         serviceCollection.AddScoped<ChatBS>();
+        serviceCollection.AddScoped<AttachmentBS>();
 
         return serviceCollection;
     }

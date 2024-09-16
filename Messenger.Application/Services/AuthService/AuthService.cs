@@ -174,9 +174,6 @@ public class AuthService : BaseService, IAuthService
             await _authBS.GetRefreshTokenAsync(request.RefreshToken)
             ?? throw new InvalidCredentialsException("Invalid refresh token");
 
-        if (refreshToken.ExpiryTime < DateTime.Now)
-            throw new OperationNotAllowedException("Expired refresh token");
-
         await _authBS.DeleteRefreshTokenAsync(refreshToken);
 
         return new AuthServiceRevokeTokenResponse() { IsSuccess = true };

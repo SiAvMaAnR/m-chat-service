@@ -18,9 +18,7 @@ public class ChatController : ControllerBase
     }
 
     [HttpGet("messages"), Authorize]
-    public async Task<IActionResult> GetMessages(
-        [FromQuery] ChatControllerMessagesRequest request
-    )
+    public async Task<IActionResult> GetMessages([FromQuery] ChatControllerMessagesRequest request)
     {
         ChatServiceMessagesResponse response = await _chatService.MessagesAsync(
             new ChatServiceMessagesRequest()

@@ -6,9 +6,9 @@ using Messenger.Persistence.Extensions;
 
 namespace Messenger.Application.Services.ChatService.Extensions;
 
-public static class ProcessAttachmentsExtension
+public static class ProcessAttachment
 {
-    private static string TrimBase64(AttachmentRequest attachment)
+    private static string TrimBase64(ChatServiceUploadAttachmentRequest attachment)
     {
         return attachment.Type switch
         {
@@ -21,27 +21,29 @@ public static class ProcessAttachmentsExtension
         };
     }
 
-    public static async Task<Attachment[]> ProcessAttachmentsAsync(
-        this IEnumerable<AttachmentRequest> attachments,
+    public static async Task<Attachment> CreateFileAsync(
+        ChatServiceUploadAttachmentRequest attachment,
         IAppSettings appSettings
     )
     {
         string filePath = appSettings.FilePath.File;
 
-        IEnumerable<Task<Attachment>> tasks = attachments.Select(async attachment =>
-        {
-            string content = TrimBase64(attachment);
+        string content = TrimBase64(attachment);
 
-            byte[] fileBytes = Convert.FromBase64String(content);
+        byte[] fileBytes = Convert.FromBase64String(content);
 
-            string? file = await fileBytes.WriteToFileAsync(
+        string? file =
+            await FileManager.WriteToFileAsync(
+                fileBytes,
                 filePath,
                 attachment.Type.Replace("/", ".")
-            );
+            ) ?? throw new IncorrectDataException("Failed to create file", true);
 
-            return new Attachment(file ?? "Failed", attachment.Type);
-        });
+        return new Attachment(file, attachment.Type, attachment.UniqueId);
+    }
 
-        return await Task.WhenAll(tasks);
+    public static bool RemoveFile(Attachment attachment)
+    {
+        return FileManager.RemoveFile(attachment.Content);
     }
 }
