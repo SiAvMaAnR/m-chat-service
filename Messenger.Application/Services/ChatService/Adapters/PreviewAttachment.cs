@@ -10,5 +10,7 @@ public class ChatServicePreviewAttachmentAdapter : PreviewAttachmentResponse
         Id = attachment.Id;
         Type = attachment.Type;
         UniqueId = attachment.UniqueId;
+        Name = attachment.Name;
+        Size = attachment.Size;
     }
 }

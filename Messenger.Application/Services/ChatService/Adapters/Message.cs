@@ -24,6 +24,8 @@ public class ChatServiceMessageAdapter : ChatServiceMessageResponseData
                     {
                         Id = attachment.Id,
                         Type = attachment.Type,
+                        Name = attachment.Name,
+                        Size = attachment.Size,
                     }
             );
     }

@@ -13,5 +13,7 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
         builder.Property(attachment => attachment.Content).IsRequired();
         builder.HasIndex(attachment => attachment.Type);
         builder.Property(attachment => attachment.Type).IsRequired();
+        builder.Property(attachment => attachment.Name).IsRequired();
+        builder.Property(attachment => attachment.Size).IsRequired();
     }
 }

@@ -135,7 +135,9 @@ public class ChatService : BaseService, IChatService
         {
             Id = attachment.Id,
             Content = contentBytes,
-            Type = attachment.Type
+            Type = attachment.Type,
+            Name = attachment.Name,
+            Size = attachment.Size
         };
     }
 
