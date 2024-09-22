@@ -22,7 +22,15 @@ public partial class Message : IAggregateRoot
 
     public void AddAttachments(List<Attachment> attachments)
     {
-        attachments.ForEach(Attachments.Add);
+        attachments.ForEach(
+            (attachment) =>
+            {
+                if (attachment.MessageId == null)
+                {
+                    Attachments.Add(attachment);
+                }
+            }
+        );
     }
 
     public void Delete()

@@ -3,7 +3,7 @@
 public static class FileManager
 {
     public static async Task<string?> WriteToFileAsync(
-        this byte[]? file,
+        byte[]? file,
         string path,
         string fileName
     )
@@ -20,6 +20,16 @@ public static class FileManager
         await File.WriteAllBytesAsync(fullPath, file);
 
         return fullPath;
+    }
+
+    public static bool RemoveFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+            return false;
+
+        File.Delete(filePath);
+
+        return true;
     }
 
     public static async Task<byte[]?> ReadToBytesAsync(string? path)
