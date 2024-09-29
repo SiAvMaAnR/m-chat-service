@@ -9,28 +9,28 @@
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build",
-        "program": "${workspaceFolder}/ChatService.WebApi/bin/Debug/net8.0/ChatService.WebApi.dll",
+        "program": "${workspaceFolder}/Chat.WebApi/bin/Debug/net8.0/Chat.WebApi.dll",
         "args": [],
-        "cwd": "${workspaceFolder}/ChatService.WebApi",
+        "cwd": "${workspaceFolder}/Chat.WebApi",
         "stopAtEntry": false,
         "console": "integratedTerminal",
         "requireExactSource": false,
         "serverReadyAction": {
           "uriFormat": "%s/swagger"
         },
-        "launchSettingsProfile": "ChatService.Development"
+        "launchSettingsProfile": "Chat.Development"
       },
       {
         "name": ".NET Core Launch (Production)",
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build",
-        "program": "${workspaceFolder}/ChatService.WebApi/bin/Debug/net8.0/ChatService.WebApi.dll",
+        "program": "${workspaceFolder}/Chat.WebApi/bin/Debug/net8.0/Chat.WebApi.dll",
         "args": [],
-        "cwd": "${workspaceFolder}/ChatService.WebApi",
+        "cwd": "${workspaceFolder}/Chat.WebApi",
         "stopAtEntry": false,
         "console": "integratedTerminal",
-        "launchSettingsProfile": "ChatService.Production"
+        "launchSettingsProfile": "Chat.Production"
       }
     ]
 }
