@@ -6,7 +6,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       CONNECTIONSTRINGS__REDISCONNECTION: "redis:6379"
-      CONNECTIONSTRINGS__DBCONNECTION: "Data Source=database-mssql,1433;Initial Catalog=Messenger;User Id=sa;Password=SecretPassword161;TrustServerCertificate=True"
+      CONNECTIONSTRINGS__DBCONNECTION: "Data Source=chat-service-db,1433;Initial Catalog=ChatDB;User Id=sa;Password=SecretPassword161;TrustServerCertificate=True"
       COMMON__SECRETKEY: "secret_key_88002353535_161"
       CLIENT__BASEURL: "http://147.45.78.164:3000"
       RMQ__HOSTNAME: "rabbitmq"
@@ -15,14 +15,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - database-mssql
-      - redis
+      - chat-service-db
+      - chat-service-redis
     networks:
       - app-network
     volumes:
       - ./.meta/server/uploads:/uploads
 
-  database-mssql:
+  chat-service-db:
     image: mcr.microsoft.com/mssql/server:latest
     container_name: chat-service-db
     restart: on-failure
@@ -42,7 +42,7 @@ services:
       - ./.meta/mssql/log:/var/opt/mssql/log
       - ./.meta/mssql/secrets:/var/opt/mssql/secrets
 
-  redis:
+  chat-service-redis:
     image: redis:latest
     container_name: chat-service-redis
     restart: on-failure
