@@ -28,8 +28,8 @@
 
 ### Dotnet: launch
 
-`dotnet run --launch-profile "ChatService.Development"`
+`dotnet run --launch-profile "Chat.Development"`
 
 ### Dotnet: launch release
 
-`dotnet bin/Release/net8.0/ChatService.WebApi.dll`
+`dotnet bin/Release/net8.0/Chat.WebApi.dll`

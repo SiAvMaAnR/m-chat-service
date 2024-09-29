@@ -15,4 +15,4 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "ChatService.WebApi.dll"]
+ENTRYPOINT ["dotnet", "Chat.WebApi.dll"]
