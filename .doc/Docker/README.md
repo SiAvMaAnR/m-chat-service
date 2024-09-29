@@ -12,7 +12,7 @@
 
 ### Docker: image build
 
-`docker buildx build -t samarkinivan/messenger-server .`
+`docker buildx build -t samarkinivan/chat-service .`
 
 ### Docker: check memory
 
