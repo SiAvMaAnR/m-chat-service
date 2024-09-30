@@ -10,7 +10,7 @@ public class NotificationsIS : BaseIService, INotificationsIS
     public NotificationsIS(IAppSettings appSettings, IRabbitMQProducer rabbitMQProducer)
         : base(appSettings, rabbitMQProducer) { }
 
-    public async Task<NotificationsIServiceSendEmailResponse> SendEmail(
+    public async Task<NotificationsIServiceSendEmailResponse> SendEmailAsync(
         NotificationsIServiceSendEmailRequest request
     )
     {

@@ -65,7 +65,7 @@ public class UserService : BaseService, IUserService
 
         string confirmationLink = $"{baseUrl}/{path}?code={confirmation}";
 
-        await _notificationsIS.SendEmail(
+        await _notificationsIS.SendEmailAsync(
             new NotificationsIServiceSendEmailRequest()
             {
                 Template = EmailTemplate.ConfirmRegistration,

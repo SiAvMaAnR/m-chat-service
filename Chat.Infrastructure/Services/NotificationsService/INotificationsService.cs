@@ -4,7 +4,7 @@ namespace Chat.Infrastructure.Services.NotificationsService;
 
 public interface INotificationsIS
 {
-    Task<NotificationsIServiceSendEmailResponse> SendEmail(
+    Task<NotificationsIServiceSendEmailResponse> SendEmailAsync(
         NotificationsIServiceSendEmailRequest request
     );
 }
