@@ -1,6 +1,7 @@
 ﻿using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Shared.Models;
 
 namespace Chat.Domain.Services;
 
@@ -30,6 +31,14 @@ public class AccountBS : DomainService
     public async Task UpdateActivityStatusAsync(Account account, string activityStatus)
     {
         account.UpdateActivityStatus(activityStatus);
+
+        _unitOfWork.Account.Update(account);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task UpdatePasswordAsync(Account account, Password password)
+    {
+        account.UpdatePassword(password.Hash, password.Salt);
 
         _unitOfWork.Account.Update(account);
         await _unitOfWork.SaveChangesAsync();

@@ -14,6 +14,7 @@ builder.Services.AddCommonDependencies(config);
 builder.Services.AddTransientDependencies();
 builder.Services.AddScopedDependencies();
 builder.Services.AddSingletonDependencies(config);
+builder.Services.AddHostedDependencies();
 
 builder.Logging.AddCommonConfiguration(config);
 

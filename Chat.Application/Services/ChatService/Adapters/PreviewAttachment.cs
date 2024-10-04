@@ -1,4 +1,4 @@
-using Chat.Application.Services.ChatService.Models;
+﻿using Chat.Application.Services.ChatService.Models;
 using Chat.Domain.Entities.Attachments;
 
 namespace Chat.Application.Services.ChatService.Adapters;

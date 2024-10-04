@@ -5,7 +5,6 @@ using Chat.Application.Services.ChatService;
 using Chat.Application.Services.UserService;
 using Chat.Domain.Common;
 using Chat.Domain.Services;
-using Chat.Infrastructure.RabbitMQ;
 using Chat.Infrastructure.Services.NotificationsService;
 using Chat.Persistence.UnitOfWork;
 
@@ -18,8 +17,6 @@ public static partial class ServiceManagerExtension
     )
     {
         serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
-        serviceCollection.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
-        serviceCollection.AddScoped<IRabbitMQConsumer, RabbitMQConsumer>();
 
         serviceCollection.AddScoped<INotificationsIS, NotificationsIS>();
 
