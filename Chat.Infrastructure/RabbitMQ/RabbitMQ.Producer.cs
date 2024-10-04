@@ -5,30 +5,16 @@ using RabbitMQ.Client.Events;
 
 namespace Chat.Infrastructure.RabbitMQ;
 
-public class RabbitMQProducer : IRabbitMQProducer
+public class RabbitMQProducer : RabbitMQBase, IRabbitMQProducer
 {
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
-    private readonly IAppSettings _appSettings;
-
     public RabbitMQProducer(IAppSettings appSettings)
-    {
-        _appSettings = appSettings;
-        _connection = RabbitMQ.CreateConnection(appSettings);
-        _channel = _connection.CreateModel();
-    }
+        : base(appSettings) { }
 
     public void Send(string queue, string pattern, object message)
     {
-        byte[] body = RabbitMQ.MessageAdapter(message, pattern);
+        byte[] body = MessageAdapter(message, pattern);
 
-        _channel.QueueDeclare(
-            queue: queue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null
-        );
+        CreateQueue(queue);
 
         _channel.BasicPublish(
             exchange: string.Empty,
@@ -38,17 +24,26 @@ public class RabbitMQProducer : IRabbitMQProducer
         );
     }
 
+    public void SendReply(string queue, string correlationId, string pattern, object? message)
+    {
+        byte[] body = MessageAdapter(message, pattern);
+
+        IBasicProperties properties = _channel.CreateBasicProperties();
+        properties.CorrelationId = correlationId;
+
+        _channel.BasicPublish(
+            exchange: string.Empty,
+            routingKey: queue,
+            basicProperties: properties,
+            body: body
+        );
+    }
+
     public async Task<TResponse?> Emit<TResponse>(string queue, string pattern, object message)
     {
-        byte[] body = RabbitMQ.MessageAdapter(message, pattern);
+        byte[] body = MessageAdapter(message, pattern);
 
-        _channel.QueueDeclare(
-            queue: queue,
-            durable: true,
-            exclusive: false,
-            autoDelete: false,
-            arguments: null
-        );
+        CreateQueue(queue);
 
         var tcs = new TaskCompletionSource<string>();
         var consumer = new EventingBasicConsumer(_channel);
@@ -91,6 +86,6 @@ public class RabbitMQProducer : IRabbitMQProducer
 
         string result = await tcs.Task;
 
-        return RabbitMQ.Deserialize<TResponse>(result);
+        return Deserialize<TResponse>(result);
     }
 }

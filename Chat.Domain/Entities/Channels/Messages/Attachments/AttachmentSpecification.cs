@@ -34,5 +34,6 @@ public class PreviewAttachmentsSpec : Specification<Attachment>
                 attachment.MessageId == null
                 && attachment.ChannelId == channelId
                 && attachment.OwnerId == ownerId
-        ) { }
+        )
+    { }
 }

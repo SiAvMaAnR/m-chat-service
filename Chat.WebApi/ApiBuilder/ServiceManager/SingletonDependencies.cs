@@ -1,5 +1,6 @@
 ﻿using Chat.Domain.Common;
 using Chat.Infrastructure.AppSettings;
+using Chat.Infrastructure.RabbitMQ;
 using Chat.WebApi.Common;
 using StackExchange.Redis;
 
@@ -18,6 +19,8 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddSingleton<IConnectionMultiplexer>(
             ConnectionMultiplexer.Connect(connection)
         );
+        serviceCollection.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
+        serviceCollection.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 
         return serviceCollection;
     }

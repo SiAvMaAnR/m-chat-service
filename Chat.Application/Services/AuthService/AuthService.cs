@@ -128,7 +128,7 @@ public class AuthService : BaseService, IAuthService
 
         string resetPasswordLink = $"{baseUrl}/{path}?token={resetToken}";
 
-        await _notificationsIS.SendEmail(
+        await _notificationsIS.SendEmailAsync(
             new NotificationsIServiceSendEmailRequest()
             {
                 Template = EmailTemplate.ResetPassword,
