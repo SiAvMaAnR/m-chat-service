@@ -10,7 +10,7 @@ public class RabbitMQProducer : RabbitMQBase, IRabbitMQProducer
     public RabbitMQProducer(IAppSettings appSettings)
         : base(appSettings) { }
 
-    public void Send(string queue, string pattern, object message)
+    public void Send(string queue, string pattern, object? message)
     {
         byte[] body = MessageAdapter(message, pattern);
 
