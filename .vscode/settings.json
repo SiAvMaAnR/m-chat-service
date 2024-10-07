@@ -1,0 +1,18 @@
+{
+  "cSpell.words": [
+    "buildx",
+    "Encryptor",
+    "hmac",
+    "HMACSHA",
+    "samarkinivan",
+    "Serilog",
+    "Sosnova",
+    "Swashbuckle",
+    "Unprotect"
+  ],
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
+    // "**/*.csproj": true
+  },
+}

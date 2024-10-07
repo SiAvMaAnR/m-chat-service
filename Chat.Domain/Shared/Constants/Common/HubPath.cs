@@ -2,6 +2,8 @@
 
 public static class HubPath
 {
-    public const string Chat = "/chat";
-    public const string State = "/state";
+    private const string HubPathPrefix = "/signalR";
+
+    public const string Chat = $"{HubPathPrefix}/chat";
+    public const string State = $"{HubPathPrefix}/state";
 }

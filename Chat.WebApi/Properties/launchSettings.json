@@ -6,7 +6,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:8080",
+      "applicationUrl": "http://localhost:8083",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
       }
@@ -14,7 +14,7 @@
     "Chat.Production": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:8080",
+      "applicationUrl": "https://localhost:8083",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
       }

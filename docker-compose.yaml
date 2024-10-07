@@ -13,7 +13,7 @@ services:
       RMQ__USERNAME: "guest"
       RMQ__PASSWORD: "guest"
     ports:
-      - "8080:8080"
+      - "8083:8083"
     depends_on:
       - chat-service-db
       - chat-service-redis
