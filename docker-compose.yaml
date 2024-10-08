@@ -20,7 +20,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./.meta/server/uploads:/uploads
+      - ./.meta/chat-service/server/uploads:/uploads
 
   chat-service-db:
     image: mcr.microsoft.com/mssql/server:latest
