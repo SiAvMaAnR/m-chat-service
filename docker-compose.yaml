@@ -38,9 +38,9 @@ services:
     networks:
       - app-network
     volumes:
-      - ./.meta/mssql/data:/var/opt/mssql/data
-      - ./.meta/mssql/log:/var/opt/mssql/log
-      - ./.meta/mssql/secrets:/var/opt/mssql/secrets
+      - ./.meta/chat-service/mssql/data:/var/opt/mssql/data
+      - ./.meta/chat-service/mssql/log:/var/opt/mssql/log
+      - ./.meta/chat-service/mssql/secrets:/var/opt/mssql/secrets
 
   chat-service-redis:
     image: redis:latest
@@ -55,8 +55,8 @@ services:
     networks:
       - app-network
     volumes:
-      - ./.meta/redis/data:/root/redis
-      - ./.meta/redis/conf:/usr/local/etc/redis/redis.conf
+      - ./.meta/chat-service/redis/data:/root/redis
+      - ./.meta/chat-service/redis/conf:/usr/local/etc/redis/redis.conf
 
 networks:
   app-network:
