@@ -8,7 +8,7 @@ namespace Chat.WebApi.ApiBuilder.ServiceManager;
 
 public static class PolicyConfigExtension
 {
-    private static readonly string[] s_allowOrigins = ["http://localhost:3000"];
+    private static readonly string[] s_allowOrigins = [];
 
     public static void PolicyConfig(this AuthorizationOptions authorizationOptions)
     {
@@ -24,7 +24,7 @@ public static class PolicyConfigExtension
     {
         ClientSettings clientSettings = AppSettings.GetSection<ClientSettings>(configuration);
 
-        string[] origins = s_allowOrigins.Concat([clientSettings.BaseUrl]).ToArray();
+        string[] origins = [.. s_allowOrigins, clientSettings.BaseUrl];
 
         corsOptions.AddPolicy(
             CorsPolicyName.Default,
