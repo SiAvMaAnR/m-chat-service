@@ -1,4 +1,4 @@
-using Chat.Domain.Entities.Accounts;
+﻿using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Users;
 
 namespace Chat.WebApi.RMQServices;
