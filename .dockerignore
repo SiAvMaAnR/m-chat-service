@@ -7,7 +7,7 @@
 **/bin/*
 **/obj/*
 
-**/Uploads/*
+**/uploads/*
 
 **/Dockerfile
 **/docker-compose.yaml
