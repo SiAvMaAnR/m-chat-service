@@ -10,8 +10,8 @@ services:
       COMMON__SECRETKEY: "secret_key_88002353535_161"
       CLIENT__BASEURL: "http://147.45.78.164:3000"
       RMQ__HOSTNAME: "rabbitmq"
-      RMQ__USERNAME: "guest"
-      RMQ__PASSWORD: "guest"
+      RMQ__USERNAME: "default_user"
+      RMQ__PASSWORD: "default_password"
     ports:
       - "8083:8080"
     depends_on:
