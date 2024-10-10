@@ -13,6 +13,6 @@ COPY --from=build-env /App/out .
 
 ENV ASPNETCORE_ENVIRONMENT=Development
 
-EXPOSE 8083
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Chat.WebApi.dll"]
