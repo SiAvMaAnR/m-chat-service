@@ -1,8 +1,8 @@
-﻿using Chat.Application.Services.AuthService;
-using Chat.Application.Services.AuthService.Models;
-using Chat.Application.Services.UserService;
+﻿using Chat.Application.Services.UserService;
 using Chat.Application.Services.UserService.Models;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Infrastructure.Services.AuthService.Models;
+using Chat.Infrastructure.Services.NotificationsService;
 using Chat.WebApi.Controllers.Models.Admin;
 using Chat.WebApi.Controllers.Models.User;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +15,12 @@ namespace Chat.WebApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly IAuthService _authService;
+    private readonly IAuthIS _authIS;
 
-    public UserController(IUserService userService, IAuthService authService)
+    public UserController(IUserService userService, IAuthIS authIS)
     {
         _userService = userService;
-        _authService = authService;
+        _authIS = authIS;
     }
 
     [HttpPost("registration")]
@@ -50,8 +50,8 @@ public class UserController : ControllerBase
             new UserServiceConfirmationRequest() { Confirmation = request.Confirmation }
         );
 
-        AuthServiceLoginResponse response = await _authService.LoginAsync(
-            new AuthServiceLoginRequest()
+        AuthIServiceLoginResponse? response = await _authIS.LoginAsync(
+            new AuthIServiceLoginRequest()
             {
                 Email = confirmResponse.Email,
                 Password = confirmResponse.Password

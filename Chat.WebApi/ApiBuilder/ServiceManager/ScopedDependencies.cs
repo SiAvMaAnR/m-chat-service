@@ -1,5 +1,4 @@
 ﻿using Chat.Application.Services.AccountService;
-using Chat.Application.Services.AuthService;
 using Chat.Application.Services.ChannelService;
 using Chat.Application.Services.ChatService;
 using Chat.Application.Services.UserService;
@@ -19,10 +18,10 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
 
         serviceCollection.AddScoped<INotificationsIS, NotificationsIS>();
+        serviceCollection.AddScoped<IAuthIS, AuthIS>();
 
         serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IAccountService, AccountService>();
-        serviceCollection.AddScoped<IAuthService, AuthService>();
         serviceCollection.AddScoped<IChannelService, ChannelService>();
         serviceCollection.AddScoped<IChatService, ChatService>();
 
