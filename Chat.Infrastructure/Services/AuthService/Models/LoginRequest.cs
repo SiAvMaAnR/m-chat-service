@@ -1,6 +1,6 @@
-﻿namespace Chat.Application.Services.AuthService.Models;
+namespace Chat.Infrastructure.Services.AuthService.Models;
 
-public class AuthServiceLoginRequest
+public class AuthIServiceLoginRequest
 {
     public required string Email { get; set; }
     public required string Password { get; set; }

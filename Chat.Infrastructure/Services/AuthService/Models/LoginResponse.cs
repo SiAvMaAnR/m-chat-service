@@ -1,6 +1,6 @@
-﻿namespace Chat.Application.Services.AuthService.Models;
+namespace Chat.Infrastructure.Services.AuthService.Models;
 
-public class AuthServiceLoginResponse
+public class AuthIServiceLoginResponse
 {
     public required string AccessToken { get; set; }
     public required string RefreshToken { get; set; }

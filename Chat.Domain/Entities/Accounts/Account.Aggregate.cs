@@ -1,6 +1,5 @@
 ﻿using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
-using Chat.Domain.Entities.RefreshTokens;
 
 namespace Chat.Domain.Entities.Accounts;
 
@@ -20,11 +19,6 @@ public partial class Account : IAggregateRoot
     public void UpdateImage(string? image)
     {
         Image = image;
-    }
-
-    public void AddRefreshToken(RefreshToken refreshToken)
-    {
-        RefreshTokens.Add(refreshToken);
     }
 
     public void UpdatePassword(byte[] passwordHash, byte[] passwordSalt)

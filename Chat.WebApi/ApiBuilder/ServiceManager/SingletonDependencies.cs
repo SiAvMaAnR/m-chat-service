@@ -16,11 +16,11 @@ public static partial class ServiceManagerExtension
         string connection = AppEnvironment.GetRedisConnectionString(config);
 
         serviceCollection.AddSingleton<IAppSettings, AppSettings>();
+        serviceCollection.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
+        serviceCollection.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
         serviceCollection.AddSingleton<IConnectionMultiplexer>(
             ConnectionMultiplexer.Connect(connection)
         );
-        serviceCollection.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
-        serviceCollection.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
 
         return serviceCollection;
     }

@@ -9,6 +9,7 @@ public static class RMQ
         public const string Ai = "ai-queue";
         public const string Notifications = "notifications-queue";
         public const string Accounts = "accounts-queue";
+        public const string Auth = "auth-queue";
     }
 
     public static class AIQueuePattern
@@ -26,6 +27,11 @@ public static class RMQ
         public const string UpdatePassword = "update-password";
         public const string GetById = "get-by-id";
         public const string GetByEmail = "get-by-email";
+    }
+
+    public static class AuthQueuePattern
+    {
+        public const string Login = "login";
     }
 }
 

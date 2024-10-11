@@ -2,7 +2,6 @@
 using System.Text.Json.Serialization;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
-using Chat.Domain.Entities.RefreshTokens;
 using Chat.Domain.Shared.Constants.Common;
 
 namespace Chat.Domain.Entities.Accounts;
@@ -24,8 +23,6 @@ public partial class Account : BaseEntity
     public string? Image { get; set; }
     public string ActivityStatus { get; set; } = AccountStatus.Offline;
     public DateTime LastOnlineAt { get; set; }
-    public ICollection<RefreshToken> RefreshTokens { get; private set; } = [];
-
     [JsonIgnore]
     public byte[] PasswordHash { get; private set; }
 
