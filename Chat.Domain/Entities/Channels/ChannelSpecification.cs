@@ -37,6 +37,7 @@ public class AccountChannelsSpec : Specification<Channel>
         AddInclude(channel => channel.Accounts);
         AddInclude(channel => channel.Messages);
         AddInclude("Messages.Author");
+        AddInclude("Messages.Attachments");
         AddInclude("Messages.ReadAccounts");
         ApplyOrderByDescending(channel => channel.LastActivity);
     }
@@ -53,6 +54,7 @@ public class AccountChannelSpec : Specification<Channel>
         AddInclude(channel => channel.Accounts);
         AddInclude(channel => channel.Messages);
         AddInclude("Messages.Author");
+        AddInclude("Messages.Attachments");
         AddInclude("Messages.ReadAccounts");
         ApplyOrderByDescending(channel => channel.LastActivity);
         ApplyTracking();
