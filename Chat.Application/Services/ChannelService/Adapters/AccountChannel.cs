@@ -22,10 +22,15 @@ public class ChannelServiceAccountChannelListAdapter : ChannelServiceAccountChan
 
         if (lastMessage != null)
         {
+            int attachmentsCount = lastMessage.Attachments.Count;
+            string lastMessageContent = string.IsNullOrEmpty(lastMessage.Text)
+                ? $"{attachmentsCount} attachments"
+                : lastMessage.Text;
+
             LastMessage = new ChannelServiceLastMessageResponseData()
             {
                 Author = lastMessage.Author?.Login,
-                Content = lastMessage.Text
+                Content = lastMessageContent,
             };
         }
 
@@ -69,10 +74,15 @@ public class ChannelServiceAccountChannelAdapter : ChannelServiceAccountChannelR
 
         if (lastMessage != null)
         {
+            int attachmentsCount = lastMessage.Attachments.Count;
+            string lastMessageContent = string.IsNullOrEmpty(lastMessage.Text)
+                ? $"{attachmentsCount} attachments"
+                : lastMessage.Text;
+
             LastMessage = new ChannelServiceLastMessageForOneResponseData()
             {
                 Author = lastMessage.Author?.Login,
-                Content = lastMessage.Text
+                Content = lastMessageContent
             };
         }
 
