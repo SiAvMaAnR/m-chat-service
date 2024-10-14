@@ -26,10 +26,12 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("upload-image"), Authorize]
-    public async Task<IActionResult> UploadImage(IFormFile file)
+    public async Task<IActionResult> UploadImage(
+        [FromBody] AccountControllerUploadImageRequest request
+    )
     {
         AccountServiceUploadImageResponse response = await _accountService.UploadImageAsync(
-            new AccountServiceUploadImageRequest() { File = file }
+            new AccountServiceUploadImageRequest() { Image = request.Image }
         );
 
         return Ok(response);
