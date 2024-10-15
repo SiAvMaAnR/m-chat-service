@@ -1,4 +1,5 @@
 ﻿using Chat.Application.Services.AccountService.Adapters;
+using Chat.Application.Services.AccountService.Extensions;
 using Chat.Application.Services.AccountService.Models;
 using Chat.Application.Services.Common;
 using Chat.Domain.Common;
@@ -34,22 +35,15 @@ public class AccountService : BaseService, IAccountService
             await _unitOfWork.Account.GetAsync(new AccountByIdSpec(UserId, true))
             ?? throw new NotExistsException("Account not found");
 
-        string imagePath = _appSettings.FilePath.Image;
+        string fullPath = await ProcessImage.CreateFileAsync(
+            request.Image,
+            account.Email,
+            _appSettings
+        );
 
-        using (var stream = new MemoryStream())
-        {
-            request.File.CopyTo(stream);
+        await _accountBS.UpdateImageAsync(account, fullPath);
 
-            string? imageBase64 = await FileManager.WriteToFileAsync(
-                stream.ToArray(),
-                imagePath,
-                account.Email
-            );
-
-            await _accountBS.UpdateImageAsync(account, imageBase64);
-        }
-
-        return new AccountServiceUploadImageResponse() { IsSuccess = true };
+        return new AccountServiceUploadImageResponse() { Image = request.Image };
     }
 
     public async Task<AccountServiceImageResponse> GetImageAsync()
