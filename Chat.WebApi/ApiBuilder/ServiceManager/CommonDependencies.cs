@@ -14,10 +14,11 @@ public static partial class ServiceManagerExtension
         IConfiguration config
     )
     {
-        string? connection = AppEnvironment.GetDBConnectionString(config);
+        string? dbConnection = AppEnvironment.GetDBConnectionString(config);
+        string? redisConnection = AppEnvironment.GetRedisConnectionString(config);
 
         serviceCollection.AddOptions();
-        serviceCollection.AddDbContext<EFContext>(options => options.UseSqlServer(connection));
+        serviceCollection.AddDbContext<EFContext>(options => options.UseSqlServer(dbConnection));
         serviceCollection.AddControllers();
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddHttpContextAccessor();
@@ -36,6 +37,10 @@ public static partial class ServiceManagerExtension
             }
         );
         serviceCollection.AddHttpClient();
+        serviceCollection.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnection;
+        });
 
         return serviceCollection;
     }

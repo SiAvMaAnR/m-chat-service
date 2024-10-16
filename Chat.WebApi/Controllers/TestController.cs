@@ -1,5 +1,6 @@
 ﻿using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.RabbitMQ;
+using Chat.Persistence.Redis;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.WebApi.Controllers;
@@ -8,6 +9,13 @@ namespace Chat.WebApi.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
+    private readonly IRedisClient _redisClient;
+
+    public TestController(IRedisClient redisClient)
+    {
+        _redisClient = redisClient;
+    }
+
     [HttpGet("rabbit-mq")]
     public async Task<IActionResult> TestRabbitMQ(IRabbitMQProducer rabbitMQProducer)
     {
@@ -26,6 +34,22 @@ public class TestController : ControllerBase
                 messages = new List<object>(),
             }
         );
+
+        return Ok(result);
+    }
+
+    [HttpPost("redis")]
+    public async Task<IActionResult> TestRedisSet([FromBody] string data)
+    {
+        await _redisClient.SetAsync("cache:test", data, TimeSpan.FromSeconds(5));
+
+        return Ok();
+    }
+
+    [HttpGet("redis")]
+    public async Task<IActionResult> TestRedisGet()
+    {
+        string? result = await _redisClient.GetAsync("cache:test");
 
         return Ok(result);
     }
