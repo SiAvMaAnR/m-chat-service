@@ -83,10 +83,13 @@ public partial class AccountsRMQService : RMQService
             {
                 byte[] body = args.Body.ToArray();
                 string bodyJson = Encoding.UTF8.GetString(body);
+                JsonSerializerOptions serializerOptions = RabbitMQBase.JsonSerializerOptions;
 
                 RMQResponse<JsonElement> result =
-                    JsonSerializer.Deserialize<RMQResponse<JsonElement>>(bodyJson)
-                    ?? throw new IncorrectDataException("Failed to deserialize json");
+                    JsonSerializer.Deserialize<RMQResponse<JsonElement>>(
+                        bodyJson,
+                        serializerOptions
+                    ) ?? throw new IncorrectDataException("Failed to deserialize json");
 
                 string replyQueue = args.BasicProperties.ReplyTo;
                 string correlationId = args.BasicProperties.CorrelationId;
@@ -100,19 +103,28 @@ public partial class AccountsRMQService : RMQService
                     RMQ.AccountsQueuePattern.GetByEmail
                         => GetByEmailAsync(
                             args.BasicProperties,
-                            JsonSerializer.Deserialize<GetByEmailData>(result.Data)!,
+                            JsonSerializer.Deserialize<GetByEmailData>(
+                                result.Data,
+                                serializerOptions
+                            )!,
                             accountBS
                         ),
                     RMQ.AccountsQueuePattern.GetById
                         => GetByIdAsync(
                             args.BasicProperties,
-                            JsonSerializer.Deserialize<GetByIdData>(result.Data)!,
+                            JsonSerializer.Deserialize<GetByIdData>(
+                                result.Data,
+                                serializerOptions
+                            )!,
                             accountBS
                         ),
                     RMQ.AccountsQueuePattern.UpdatePassword
                         => UpdatePasswordAsync(
                             args.BasicProperties,
-                            JsonSerializer.Deserialize<UpdatePasswordData>(result.Data)!,
+                            JsonSerializer.Deserialize<UpdatePasswordData>(
+                                result.Data,
+                                serializerOptions
+                            )!,
                             accountBS
                         ),
                     _ => throw new OperationNotAllowedException("Message pattern not found")

@@ -1,3 +1,10 @@
-﻿namespace Chat.Infrastructure.Services.AIService;
+﻿using Chat.Infrastructure.Services.AIService.Models;
 
-public interface IAIIS { }
+namespace Chat.Infrastructure.Services.AIService;
+
+public interface IAIIS
+{
+    Task<AIIServiceCreateMessageResponse?> CreateMessageAsync(
+        AIIServiceCreateMessageRequest request
+    );
+}

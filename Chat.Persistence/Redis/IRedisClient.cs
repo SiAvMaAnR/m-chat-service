@@ -1,4 +1,4 @@
-namespace Chat.Persistence.Redis;
+﻿namespace Chat.Persistence.Redis;
 
 public interface IRedisClient
 {

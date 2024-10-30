@@ -1,9 +1,9 @@
-using Chat.Domain.Common;
+﻿using Chat.Domain.Common;
 using Chat.Infrastructure.RabbitMQ;
 using Chat.Infrastructure.Services.AuthService.Models;
 using Chat.Infrastructure.Services.Common;
 
-namespace Chat.Infrastructure.Services.NotificationsService;
+namespace Chat.Infrastructure.Services.AuthService;
 
 public class AuthIS : BaseIService, IAuthIS
 {

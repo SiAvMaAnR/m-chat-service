@@ -1,5 +1,6 @@
 ﻿using Chat.Domain.Shared.Models;
-using Chat.Infrastructure.RabbitMQ;
+using Chat.Infrastructure.Services.AIService;
+using Chat.Infrastructure.Services.AIService.Models;
 using Chat.Persistence.Redis;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,21 +18,13 @@ public class TestController : ControllerBase
     }
 
     [HttpGet("rabbit-mq")]
-    public async Task<IActionResult> TestRabbitMQ(IRabbitMQProducer rabbitMQProducer)
+    public async Task<IActionResult> TestRabbitMQ(IAIIS aiIService)
     {
-        AIMessage? result = await rabbitMQProducer.Emit<AIMessage>(
-            RMQ.Queue.Ai,
-            RMQ.AIQueuePattern.CreateMessage,
-            new
+        AIIServiceCreateMessageResponse? result = await aiIService.CreateMessageAsync(
+            new AIIServiceCreateMessageRequest()
             {
-                message = new { content = "Кто такой цицерон?", role = "user" },
-                apiKey = new
-                {
-                    model = "GigaChat",
-                    content = "NzIwYjVhNWQtODFjNC00MzFlLWFhNGEtY2ZkNjMyYWUxZWEwOjBkYTlkOTJmLTQ5ZGItNDNkMS1hOTFjLTFlZmVmMTMxOTE5Ng==",
-                },
-                temperature = 0.6,
-                messages = new List<object>(),
+                ProfileId = 61,
+                Messages = [new AIMessage() { Content = "Кто такой кутахпас?", Role = "user" }]
             }
         );
 

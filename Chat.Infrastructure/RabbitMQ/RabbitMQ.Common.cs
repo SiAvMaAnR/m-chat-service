@@ -10,6 +10,8 @@ public class RabbitMQBase
     protected readonly IConnection _connection;
     protected readonly IModel _channel;
     protected readonly IAppSettings _appSettings;
+    public static readonly JsonSerializerOptions JsonSerializerOptions =
+        new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public RabbitMQBase(IAppSettings appSettings)
     {
@@ -43,7 +45,10 @@ public class RabbitMQBase
 
     protected static byte[] MessageAdapter(object? message, string? pattern = null)
     {
-        string adaptedMessage = JsonSerializer.Serialize(new { pattern, data = message });
+        string adaptedMessage = JsonSerializer.Serialize(
+            new { pattern, data = message },
+            JsonSerializerOptions
+        );
 
         return Encoding.UTF8.GetBytes(adaptedMessage);
     }
@@ -52,7 +57,7 @@ public class RabbitMQBase
     {
         try
         {
-            return JsonSerializer.Deserialize<TResponse>(content);
+            return JsonSerializer.Deserialize<TResponse>(content, JsonSerializerOptions);
         }
         catch (Exception)
         {

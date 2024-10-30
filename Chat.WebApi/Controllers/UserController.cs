@@ -1,8 +1,8 @@
 ﻿using Chat.Application.Services.UserService;
 using Chat.Application.Services.UserService.Models;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Infrastructure.Services.AuthService;
 using Chat.Infrastructure.Services.AuthService.Models;
-using Chat.Infrastructure.Services.NotificationsService;
 using Chat.WebApi.Controllers.Models.Admin;
 using Chat.WebApi.Controllers.Models.User;
 using Microsoft.AspNetCore.Authorization;
