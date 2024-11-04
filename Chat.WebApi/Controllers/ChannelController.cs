@@ -29,7 +29,11 @@ public class ChannelController : ControllerBase
     {
         ChannelServiceCreateDirectChannelResponse response =
             await _channelService.CreateDirectChannelAsync(
-                new ChannelServiceCreateDirectChannelRequest() { AccountId = request.AccountId }
+                new ChannelServiceCreateDirectChannelRequest()
+                {
+                    AccountId = request.AccountId,
+                    AIProfileId = request.AIProfileId,
+                }
             );
 
         return Ok(response);
@@ -45,7 +49,8 @@ public class ChannelController : ControllerBase
                 new ChannelServiceCreatePublicChannelRequest()
                 {
                     Name = request.Name,
-                    Members = request.Members
+                    Members = request.Members,
+                    AIProfileId = request.AIProfileId,
                 }
             );
 
@@ -62,7 +67,8 @@ public class ChannelController : ControllerBase
                 new ChannelServiceCreatePrivateChannelRequest()
                 {
                     Name = request.Name,
-                    Members = request.Members
+                    Members = request.Members,
+                    AIProfileId = request.AIProfileId
                 }
             );
 

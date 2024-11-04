@@ -3,4 +3,5 @@
 public class ChannelControllerCreateDirectChannelRequest
 {
     public int AccountId { get; set; }
+    public int? AIProfileId { get; set; }
 }

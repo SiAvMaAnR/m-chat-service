@@ -1,4 +1,4 @@
-﻿using Chat.Domain.Entities.Admins;
+﻿using Chat.Domain.Entities.Accounts.Admins;
 using Chat.Persistence.DBContext;
 using Chat.Persistence.Repositories.Common;
 

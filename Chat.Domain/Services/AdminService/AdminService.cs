@@ -1,7 +1,7 @@
 ﻿using Chat.Domain.Common;
-using Chat.Domain.Entities.Admins;
+using Chat.Domain.Entities.Accounts.Admins;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.AdminService;
 
 public class AdminBS : DomainService
 {

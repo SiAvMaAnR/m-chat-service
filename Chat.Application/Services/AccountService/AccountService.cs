@@ -4,9 +4,9 @@ using Chat.Application.Services.AccountService.Models;
 using Chat.Application.Services.Common;
 using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
-using Chat.Domain.Entities.Users;
+using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
-using Chat.Domain.Services;
+using Chat.Domain.Services.AccountService;
 using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -32,7 +32,7 @@ public class AccountService : BaseService, IAccountService
     )
     {
         Account account =
-            await _unitOfWork.Account.GetAsync(new AccountByIdSpec(UserId, true))
+            await _unitOfWork.Account.GetAsync(new AccountByIdSpec(AccountId, true))
             ?? throw new NotExistsException("Account not found");
 
         string fullPath = await ProcessImage.CreateFileAsync(
@@ -49,7 +49,7 @@ public class AccountService : BaseService, IAccountService
     public async Task<AccountServiceImageResponse> GetImageAsync()
     {
         Account account =
-            await _accountBS.GetAccountByIdAsync(UserId)
+            await _accountBS.GetAccountByIdAsync(AccountId)
             ?? throw new NotExistsException("Account not found");
 
         byte[]? image = await FileManager.ReadToBytesAsync(account.Image);
@@ -62,7 +62,7 @@ public class AccountService : BaseService, IAccountService
     )
     {
         Account account =
-            await _accountBS.GetAccountByIdAsync(UserId)
+            await _accountBS.GetAccountByIdAsync(AccountId)
             ?? throw new NotExistsException("Account not found");
 
         await _accountBS.UpdateActivityStatusAsync(account, request.ActivityStatus);
@@ -75,7 +75,7 @@ public class AccountService : BaseService, IAccountService
     )
     {
         IEnumerable<Account> accounts = await _accountBS.GetAccountsAsync(
-            UserId,
+            AccountId,
             request.SearchField
         );
 
@@ -98,16 +98,16 @@ public class AccountService : BaseService, IAccountService
 
     public async Task<AccountServiceProfileResponse> GetProfileAsync()
     {
-        Account user =
-            await _accountBS.GetAccountByIdAsync(UserId)
-            ?? throw new NotExistsException("User not found");
+        Account account =
+            await _accountBS.GetAccountByIdAsync(AccountId)
+            ?? throw new NotExistsException("Account not found");
 
         return new AccountServiceProfileResponse()
         {
-            Login = user.Login,
-            Email = user.Email,
-            Role = user.Role,
-            Birthday = (user as User)?.Birthday
+            Login = account.Login,
+            Email = account.Email,
+            Role = account.Role,
+            Birthday = (account as User)?.Birthday
         };
     }
 
@@ -115,6 +115,66 @@ public class AccountService : BaseService, IAccountService
         AccountServiceAccountImageRequest request
     )
     {
-        return await Task.FromResult(new AccountServiceAccountImageResponse() { });
+        Account account =
+            await _accountBS.GetAccountByIdAsync(request.AccountId)
+            ?? throw new NotExistsException("Account not found");
+
+        byte[]? image = await FileManager.ReadToBytesAsync(account.Image);
+
+        return new AccountServiceAccountImageResponse() { Image = image };
+    }
+
+    public async Task<AccountServiceAccountByIdResponse> GetAccountByIdAsync(
+        AccountServiceAccountByIdRequest request
+    )
+    {
+        Account? account =
+            await _accountBS.GetAccountByIdAsync(request.AccountId)
+            ?? throw new NotExistsException("Account not found");
+
+        return new AccountServiceAccountByIdResponse()
+        {
+            Id = account.Id,
+            Login = account.Login,
+            Email = account.Email,
+            Role = account.Role,
+            PasswordHash = account.PasswordHash,
+            PasswordSalt = account.PasswordSalt,
+            IsBanned = (account as User)?.IsBanned,
+        };
+    }
+
+    public async Task<AccountServiceAccountByEmailResponse> GetAccountByEmailAsync(
+        AccountServiceAccountByEmailRequest request
+    )
+    {
+        Account? account =
+            await _accountBS.GetAccountByEmailAsync(request.Email)
+            ?? throw new NotExistsException("Account not found");
+        ;
+
+        return new AccountServiceAccountByEmailResponse()
+        {
+            Id = account.Id,
+            Login = account.Login,
+            Email = account.Email,
+            Role = account.Role,
+            PasswordHash = account.PasswordHash,
+            PasswordSalt = account.PasswordSalt,
+            IsBanned = (account as User)?.IsBanned,
+        };
+    }
+
+    public async Task<AccountServiceUpdatePasswordResponse> UpdatePasswordAsync(
+        AccountServiceUpdatePasswordRequest request
+    )
+    {
+        Account account =
+            await _accountBS.GetAccountByIdAsync(request.AccountId)
+            ?? throw new NotExistsException("Account not found");
+
+        await _accountBS.UpdatePasswordAsync(account, request.Password);
+
+        return new AccountServiceUpdatePasswordResponse() { Password = request.Password };
     }
 }

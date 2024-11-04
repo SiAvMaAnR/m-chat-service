@@ -17,7 +17,7 @@ namespace Chat.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -127,6 +127,7 @@ namespace Chat.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ChannelId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -166,7 +167,13 @@ namespace Chat.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChannelId");
+
+                    b.HasIndex("IsDeleted");
+
                     b.HasIndex("MessageId");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("Type");
 
@@ -183,6 +190,9 @@ namespace Chat.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AIProfileId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -211,6 +221,10 @@ namespace Chat.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AIProfileId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("Name");
 
@@ -263,41 +277,13 @@ namespace Chat.Persistence.Migrations
 
                     b.HasIndex("ChannelId");
 
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("IsRead");
+
                     b.HasIndex("TargetMessageId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Chat.Domain.Entities.RefreshTokens.RefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -319,19 +305,30 @@ namespace Chat.Persistence.Migrations
                     b.ToTable("DataProtectionKeys");
                 });
 
-            modelBuilder.Entity("Chat.Domain.Entities.Admins.Admin", b =>
+            modelBuilder.Entity("Chat.Domain.Entities.Accounts.AIBots.AIBot", b =>
+                {
+                    b.HasBaseType("Chat.Domain.Entities.Accounts.Account");
+
+                    b.ToTable("Accounts");
+
+                    b.HasDiscriminator().HasValue("AIBot");
+                });
+
+            modelBuilder.Entity("Chat.Domain.Entities.Accounts.Admins.Admin", b =>
                 {
                     b.HasBaseType("Chat.Domain.Entities.Accounts.Account");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.HasIndex("IsActive");
+
                     b.ToTable("Accounts");
 
                     b.HasDiscriminator().HasValue("Admin");
                 });
 
-            modelBuilder.Entity("Chat.Domain.Entities.Users.User", b =>
+            modelBuilder.Entity("Chat.Domain.Entities.Accounts.Users.User", b =>
                 {
                     b.HasBaseType("Chat.Domain.Entities.Accounts.Account");
 
@@ -340,6 +337,8 @@ namespace Chat.Persistence.Migrations
 
                     b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
+
+                    b.HasIndex("IsBanned");
 
                     b.ToTable("Accounts");
 
@@ -419,24 +418,11 @@ namespace Chat.Persistence.Migrations
                     b.Navigation("TargetMessage");
                 });
 
-            modelBuilder.Entity("Chat.Domain.Entities.RefreshTokens.RefreshToken", b =>
-                {
-                    b.HasOne("Chat.Domain.Entities.Accounts.Account", "Account")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("Chat.Domain.Entities.Accounts.Account", b =>
                 {
                     b.Navigation("Messages");
 
                     b.Navigation("OwnedChannels");
-
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("Chat.Domain.Entities.Channels.Channel", b =>

@@ -18,17 +18,18 @@ public class TestController : ControllerBase
     }
 
     [HttpGet("rabbit-mq")]
-    public async Task<IActionResult> TestRabbitMQ(IAIIS aiIService)
+    public IActionResult TestRabbitMQ(IAIIS aiIService)
     {
-        AIIServiceCreateMessageResponse? result = await aiIService.CreateMessageAsync(
+        aiIService.CreateMessage(
             new AIIServiceCreateMessageRequest()
             {
+                ChannelId = 0,
                 ProfileId = 61,
                 Messages = [new AIMessage() { Content = "Кто такой кутахпас?", Role = "user" }]
             }
         );
 
-        return Ok(result);
+        return Ok();
     }
 
     [HttpPost("redis")]

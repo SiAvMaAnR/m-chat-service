@@ -1,8 +1,10 @@
 ﻿using Chat.Application.Common;
 using Chat.Persistence.DBContext;
 using Chat.WebApi.Common;
+using Chat.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.WebApi.ApiBuilder.ServiceManager;
@@ -33,6 +35,7 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddSignalR(
             (options) =>
             {
+                options.AddFilter<HubExceptionFilter>();
                 options.MaximumReceiveMessageSize = 25000000;
             }
         );

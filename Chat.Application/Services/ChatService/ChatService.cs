@@ -8,6 +8,10 @@ using Chat.Domain.Entities.Attachments;
 using Chat.Domain.Entities.Messages;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services;
+using Chat.Domain.Services.ChatService;
+using Chat.Domain.Shared.Models;
+using Chat.Infrastructure.Services.AIService;
+using Chat.Infrastructure.Services.AIService.Models;
 using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -17,18 +21,21 @@ public class ChatService : BaseService, IChatService
 {
     private readonly ChatBS _chatBS;
     private readonly AttachmentBS _attachmentBS;
+    private readonly IAIIS _aiIS;
 
     public ChatService(
         IUnitOfWork unitOfWork,
         IHttpContextAccessor context,
         IAppSettings appSettings,
         ChatBS chatBS,
-        AttachmentBS attachmentBS
+        AttachmentBS attachmentBS,
+        IAIIS aiIS
     )
         : base(unitOfWork, context, appSettings)
     {
         _chatBS = chatBS;
         _attachmentBS = attachmentBS;
+        _aiIS = aiIS;
     }
 
     public async Task<ChatServiceMessagesResponse> MessagesAsync(ChatServiceMessagesRequest request)
@@ -56,18 +63,59 @@ public class ChatService : BaseService, IChatService
     )
     {
         Message message = await _chatBS.AddMessageAsync(
-            UserId,
+            AccountId,
             request.ChannelId,
             request.Message,
             request.Attachments
         );
 
+        int? aiProfileId = await _chatBS.GetAIProfileIdByChannelIdAsync(request.ChannelId);
+
+        if (aiProfileId != null)
+        {
+            var aiMessage = new AIMessage() { Content = message.Text ?? "", Role = "user" };
+
+            _aiIS.CreateMessage(
+                new AIIServiceCreateMessageRequest()
+                {
+                    ChannelId = request.ChannelId,
+                    ProfileId = aiProfileId.Value,
+                    Messages = [aiMessage]
+                }
+            );
+        }
+
         IEnumerable<string> userIds = await _chatBS.GetUserIdsByChannelIdAsync(
-            UserId,
+            AccountId,
             request.ChannelId
         );
 
         return new ChatServiceSendMessageResponse()
+        {
+            UserIds = userIds,
+            Message = new ChatServiceMessageAdapter(message)
+        };
+    }
+
+    public async Task<ChatServiceCreateAIMessageResponse> CreateAIMessageAsync(
+        ChatServiceCreateAIMessageRequest request
+    )
+    {
+        int aiBotId = await _chatBS.GetAIBotId();
+
+        Message message = await _chatBS.AddMessageAsync(
+            aiBotId,
+            request.ChannelId,
+            request.Message,
+            []
+        );
+
+        IEnumerable<string> userIds = await _chatBS.GetUserIdsByChannelIdAsync(
+            aiBotId,
+            request.ChannelId
+        );
+
+        return new ChatServiceCreateAIMessageResponse()
         {
             UserIds = userIds,
             Message = new ChatServiceMessageAdapter(message)
@@ -81,16 +129,16 @@ public class ChatService : BaseService, IChatService
         IEnumerable<Message> readMessages = await _chatBS.ReadMessagesAsync(
             request.ChannelId,
             request.MessageId,
-            UserId
+            AccountId
         );
 
         IEnumerable<string> userIds = await _chatBS.GetUserIdsByChannelIdAsync(
-            UserId,
+            AccountId,
             request.ChannelId
         );
 
         int unreadMessagesCount = await _chatBS.GetUnreadMessagesCountAsync(
-            UserId,
+            AccountId,
             request.ChannelId
         );
 
@@ -109,7 +157,7 @@ public class ChatService : BaseService, IChatService
         Attachment attachment = await ProcessAttachment.CreateFileAsync(request, _appSettings);
 
         attachment.SetChannel(request.ChannelId);
-        attachment.SetOwner(UserId);
+        attachment.SetOwner(AccountId);
 
         await _attachmentBS.CreateAttachmentAsync(attachment);
 
@@ -126,7 +174,7 @@ public class ChatService : BaseService, IChatService
 
         ICollection<Account>? accounts = attachment.Message?.Channel?.Accounts ?? [];
 
-        if (attachment.OwnerId != UserId && !accounts.Any(account => account.Id == UserId))
+        if (attachment.OwnerId != AccountId && !accounts.Any(account => account.Id == AccountId))
             throw new OperationNotAllowedException();
 
         byte[] contentBytes = await FileManager.ReadToBytesAsync(attachment.Content) ?? [];
@@ -161,7 +209,7 @@ public class ChatService : BaseService, IChatService
     {
         IEnumerable<Attachment> previewAttachments = await _attachmentBS.GetPreviewAttachmentsAsync(
             request.ChannelId,
-            UserId
+            AccountId
         );
 
         return new ChatServicePreviewAttachmentsResponse()

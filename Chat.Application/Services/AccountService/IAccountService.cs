@@ -17,4 +17,13 @@ public interface IAccountService : IBaseService
     Task<AccountServiceAccountImageResponse> GetAccountImageAsync(
         AccountServiceAccountImageRequest request
     );
+    Task<AccountServiceAccountByIdResponse> GetAccountByIdAsync(
+        AccountServiceAccountByIdRequest request
+    );
+    Task<AccountServiceAccountByEmailResponse> GetAccountByEmailAsync(
+        AccountServiceAccountByEmailRequest request
+    );
+    Task<AccountServiceUpdatePasswordResponse> UpdatePasswordAsync(
+        AccountServiceUpdatePasswordRequest request
+    );
 }

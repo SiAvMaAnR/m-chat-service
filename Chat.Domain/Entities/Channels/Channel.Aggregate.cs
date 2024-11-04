@@ -52,4 +52,9 @@ public partial class Channel : IAggregateRoot
             Image = image;
         }
     }
+
+    public void SetAIProfileId(int? aiProfileId)
+    {
+        AIProfileId = aiProfileId;
+    }
 }

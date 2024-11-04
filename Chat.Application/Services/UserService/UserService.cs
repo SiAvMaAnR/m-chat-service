@@ -3,9 +3,9 @@ using Chat.Application.Services.Common;
 using Chat.Application.Services.UserService.Adapters;
 using Chat.Application.Services.UserService.Models;
 using Chat.Domain.Common;
-using Chat.Domain.Entities.Users;
+using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
-using Chat.Domain.Services;
+using Chat.Domain.Services.UserService;
 using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.Services.NotificationsService;
 using Chat.Infrastructure.Services.NotificationsService.Models;
@@ -102,7 +102,7 @@ public class UserService : BaseService, IUserService
     public async Task<UserServiceUpdateResponse> UpdateAsync(UserServiceUpdateRequest request)
     {
         User user =
-            await _userBS.GetUserByIdAsync(UserId)
+            await _userBS.GetUserByIdAsync(AccountId)
             ?? throw new NotExistsException("User not found");
 
         await _userBS.UpdateAsync(user, request.Login, request.Birthday);

@@ -14,6 +14,7 @@ public static class SeedsInitiator
         {
             DefaultUsersSeed.CreateAdmins(eFContext);
             DefaultUsersSeed.CreateUsers(eFContext);
+            DefaultUsersSeed.CreateAIBots(eFContext);
 
             transaction.Commit();
             logger.LogInformation("Seeds: Success");

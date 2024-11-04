@@ -12,7 +12,7 @@ public class AuthIS : BaseIService, IAuthIS
 
     public async Task<AuthIServiceLoginResponse?> LoginAsync(AuthIServiceLoginRequest request)
     {
-        RMQResponse<AuthIServiceLoginResponse>? response = await _rabbitMQProducer.Emit<
+        RMQResponse<AuthIServiceLoginResponse>? response = await _rabbitMQProducer.SendAsync<
             RMQResponse<AuthIServiceLoginResponse>
         >(RMQ.Queue.Auth, RMQ.AuthQueuePattern.Login, new { request.Email, request.Password });
 

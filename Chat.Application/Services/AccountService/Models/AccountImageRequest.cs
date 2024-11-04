@@ -2,5 +2,5 @@
 
 public class AccountServiceAccountImageRequest
 {
-    public int Id { get; set; }
+    public int AccountId { get; set; }
 }

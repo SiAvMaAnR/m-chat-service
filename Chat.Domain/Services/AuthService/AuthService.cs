@@ -4,7 +4,7 @@ using Chat.Domain.Common;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Models;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.AuthService;
 
 public class AuthBS : DomainService
 {

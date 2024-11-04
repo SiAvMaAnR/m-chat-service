@@ -1,4 +1,4 @@
-﻿namespace Chat.Domain.Entities.Users;
+﻿namespace Chat.Domain.Entities.Accounts.Users;
 
 public partial class User : IAggregateRoot
 {

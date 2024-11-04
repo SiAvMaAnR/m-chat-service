@@ -41,7 +41,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> GetAccountImage([FromRoute] int id)
     {
         AccountServiceAccountImageResponse response = await _accountService.GetAccountImageAsync(
-            new AccountServiceAccountImageRequest() { Id = id }
+            new AccountServiceAccountImageRequest() { AccountId = id }
         );
 
         return Ok(response);

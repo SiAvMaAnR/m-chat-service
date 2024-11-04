@@ -1,4 +1,4 @@
-﻿namespace Chat.Domain.Entities.Admins;
+﻿namespace Chat.Domain.Entities.Accounts.Admins;
 
 public partial class Admin : IAggregateRoot
 {

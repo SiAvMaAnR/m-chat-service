@@ -1,11 +1,12 @@
 ﻿using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
+using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Attachments;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Entities.Messages;
 using Chat.Domain.Exceptions;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.ChatService;
 
 public class ChatBS : DomainService
 {
@@ -94,6 +95,25 @@ public class ChatBS : DomainService
         await _unitOfWork.SaveChangesAsync();
 
         return message;
+    }
+
+    public async Task<int> GetAIBotId()
+    {
+        AIBot aiBot =
+            await _unitOfWork.AIBot.GetAsync(new FirstAIBotSpec())
+            ?? throw new NotExistsException("AIBot not exists");
+
+        return aiBot.Id;
+    }
+
+    public async Task<int?> GetAIProfileIdByChannelIdAsync(int channelId)
+    {
+        Channel? channel = await _unitOfWork.Channel.GetAsync(new ChannelByIdSpec(channelId));
+
+        if (channel == null)
+            throw new NotExistsException("Channel not exists");
+
+        return channel.AIProfileId;
     }
 
     public async Task<IEnumerable<string>> GetUserIdsByChannelIdAsync(int accountId, int channelId)

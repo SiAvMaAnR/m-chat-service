@@ -5,7 +5,7 @@ using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
-using Chat.Domain.Services;
+using Chat.Domain.Services.ChannelService;
 using Chat.Persistence.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -30,7 +30,7 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceCreateDirectChannelRequest request
     )
     {
-        await _channelBS.CreateDirectChannelAsync(UserId, request.AccountId);
+        await _channelBS.CreateDirectChannelAsync(AccountId, request.AccountId, request.AIProfileId);
 
         return new ChannelServiceCreateDirectChannelResponse() { IsSuccess = true };
     }
@@ -39,7 +39,12 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceCreatePrivateChannelRequest request
     )
     {
-        await _channelBS.CreatePrivateChannelAsync(UserId, request.Name, request.Members);
+        await _channelBS.CreatePrivateChannelAsync(
+            AccountId,
+            request.Name,
+            request.Members,
+            request.AIProfileId
+        );
 
         return new ChannelServiceCreatePrivateChannelResponse() { IsSuccess = true };
     }
@@ -48,7 +53,12 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceCreatePublicChannelRequest request
     )
     {
-        await _channelBS.CreatePublicChannelAsync(UserId, request.Name, request.Members);
+        await _channelBS.CreatePublicChannelAsync(
+            AccountId,
+            request.Name,
+            request.Members,
+            request.AIProfileId
+        );
 
         return new ChannelServiceCreatePublicChannelResponse() { IsSuccess = true };
     }
@@ -57,7 +67,7 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceConnectToChannelRequest request
     )
     {
-        await _channelBS.ConnectToChannelAsync(UserId, request.ChannelId);
+        await _channelBS.ConnectToChannelAsync(AccountId, request.ChannelId);
 
         return new ChannelServiceConnectToChannelResponse() { IsSuccess = true };
     }
@@ -72,7 +82,7 @@ public class ChannelService : BaseService, IChannelService
 
         var adaptedChannels = paginatedData
             .Collection
-            .Select(channel => new ChannelServicePublicChannelAdapter(channel, UserId))
+            .Select(channel => new ChannelServicePublicChannelAdapter(channel, AccountId))
             .ToList();
 
         await Task.WhenAll(adaptedChannels.Select(channel => channel.LoadImageAsync()));
@@ -89,7 +99,7 @@ public class ChannelService : BaseService, IChannelService
     )
     {
         IEnumerable<Channel> channels = await _channelBS.AccountChannelsAsync(
-            UserId,
+            AccountId,
             request.SearchField,
             request.ChannelType
         );
@@ -98,7 +108,7 @@ public class ChannelService : BaseService, IChannelService
 
         var adaptedChannels = paginatedData
             .Collection
-            .Select(channel => new ChannelServiceAccountChannelListAdapter(channel, UserId))
+            .Select(channel => new ChannelServiceAccountChannelListAdapter(channel, AccountId))
             .ToList();
 
         await Task.WhenAll(adaptedChannels.Select(channel => channel.LoadImageAsync()));
@@ -114,9 +124,9 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceAccountChannelRequest request
     )
     {
-        Channel channel = await _channelBS.AccountChannelAsync(UserId, request.Id);
+        Channel channel = await _channelBS.AccountChannelAsync(AccountId, request.Id);
 
-        var adaptedChannel = new ChannelServiceAccountChannelAdapter(channel, UserId);
+        var adaptedChannel = new ChannelServiceAccountChannelAdapter(channel, AccountId);
 
         await adaptedChannel.LoadImageAsync();
 
@@ -127,7 +137,7 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceSetUpDirectChannelRequest request
     )
     {
-        Channel? channel = await _channelBS.AccountDirectChannelAsync(UserId, request.PartnerId);
+        Channel? channel = await _channelBS.AccountDirectChannelAsync(AccountId, request.PartnerId);
 
         Channel? directChannel;
         bool isNeedNotify = false;
@@ -139,11 +149,11 @@ public class ChannelService : BaseService, IChannelService
         else
         {
             Channel newChannel = await _channelBS.CreateDirectChannelAsync(
-                UserId,
+                AccountId,
                 request.PartnerId
             );
 
-            directChannel = await _channelBS.AccountDirectChannelAsync(UserId, request.PartnerId);
+            directChannel = await _channelBS.AccountDirectChannelAsync(AccountId, request.PartnerId);
             isNeedNotify = true;
         }
 
@@ -154,7 +164,7 @@ public class ChannelService : BaseService, IChannelService
             .Accounts
             .Select(account => account.Id.ToString());
 
-        var adaptedChannel = new ChannelServiceDirectChannelAdapter(directChannel, UserId);
+        var adaptedChannel = new ChannelServiceDirectChannelAdapter(directChannel, AccountId);
 
         await adaptedChannel.LoadImageAsync();
 
@@ -170,7 +180,7 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceMemberImagesRequest request
     )
     {
-        Channel channel = await _channelBS.AccountChannelAsync(UserId, request.ChannelId);
+        Channel channel = await _channelBS.AccountChannelAsync(AccountId, request.ChannelId);
 
         ICollection<Account> accounts = channel.Accounts;
 

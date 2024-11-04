@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Chat.Infrastructure.RabbitMQ;
 
@@ -6,7 +7,8 @@ public static class RMQ
 {
     public static class Queue
     {
-        public const string Ai = "ai-queue";
+        public const string AI = "ai-queue";
+        public const string Chat = "chat-queue";
         public const string Notifications = "notifications-queue";
         public const string Accounts = "accounts-queue";
         public const string Auth = "auth-queue";
@@ -42,4 +44,12 @@ public class RMQResponse<TData>
 
     [JsonPropertyName("data")]
     public required TData Data { get; set; }
+}
+
+public class DeliverEventData
+{
+    public required RMQResponse<JsonElement> DeserializedResponse { get; set; }
+    public required string ReplyQueue { get; set; }
+    public required string CorrelationId { get; set; }
+    public required JsonSerializerOptions SerializerOptions { get; set; }
 }

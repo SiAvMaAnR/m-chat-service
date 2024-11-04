@@ -1,6 +1,6 @@
 ﻿using Chat.Domain.Shared.Models;
 
-namespace Chat.WebApi.RMQServices;
+namespace Chat.WebApi.RMQListeners.Accounts;
 
 public partial class AccountsRMQService
 {

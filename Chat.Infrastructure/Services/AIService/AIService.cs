@@ -10,18 +10,18 @@ public class AIIS : BaseIService, IAIIS
     public AIIS(IAppSettings appSettings, IRabbitMQProducer rabbitMQProducer)
         : base(appSettings, rabbitMQProducer) { }
 
-    public async Task<AIIServiceCreateMessageResponse?> CreateMessageAsync(
-        AIIServiceCreateMessageRequest request
-    )
+    public void CreateMessage(AIIServiceCreateMessageRequest request)
     {
-        RMQResponse<AIIServiceCreateMessageResponse>? response = await _rabbitMQProducer.Emit<
-            RMQResponse<AIIServiceCreateMessageResponse>
-        >(
-            RMQ.Queue.Ai,
+        _rabbitMQProducer.Emit(
+            RMQ.Queue.AI,
             RMQ.AIQueuePattern.CreateMessage,
-            new { request.ProfileId, request.Messages }
+            new
+            {
+                request.ChannelId,
+                request.ProfileId,
+                request.Messages
+            },
+            replyQueue: RMQ.Queue.Chat
         );
-
-        return response?.Data;
     }
 }

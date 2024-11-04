@@ -39,7 +39,7 @@ public class ChatHub(IChatService chatService, IChannelService channelService) :
     [Authorize]
     public async Task SendMessageAsync(ChatHubSendMessageRequest request)
     {
-        ChatServiceSendMessageResponse response = await _chatService.SendMessageAsync(
+        ChatServiceSendMessageResponse sendMessageResponse = await _chatService.SendMessageAsync(
             new ChatServiceSendMessageRequest()
             {
                 ChannelId = request.ChannelId,
@@ -49,8 +49,8 @@ public class ChatHub(IChatService chatService, IChannelService channelService) :
         );
 
         await Clients
-            .Users(response.UserIds)
-            .SendAsync(ChatHubMethod.SendMessageResponse, response.Message);
+            .Users(sendMessageResponse.UserIds)
+            .SendAsync(ChatHubMethod.SendMessageResponse, sendMessageResponse.Message);
     }
 
     [Authorize]
