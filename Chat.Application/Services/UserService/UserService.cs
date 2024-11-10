@@ -173,4 +173,17 @@ public class UserService : BaseService, IUserService
 
         return new UserServiceUnblockUserResponse() { IsSuccess = true };
     }
+
+    public async Task<UserServiceRemoveUserResponse> RemoveUserAsync(
+        UserServiceRemoveUserRequest request
+    )
+    {
+        User user =
+            await _userBS.GetUserByIdAsync(request.UserId, true)
+            ?? throw new NotExistsException("User not found");
+
+        await _userBS.RemoveUserAsync(user);
+
+        return new UserServiceRemoveUserResponse() { IsSuccess = true };
+    }
 }

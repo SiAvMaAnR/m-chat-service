@@ -98,6 +98,16 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
+    [HttpDelete("users/{id:int}"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
+    public async Task<IActionResult> RemoveUser([FromRoute] int id)
+    {
+        UserServiceRemoveUserResponse response = await _userService.RemoveUserAsync(
+            new UserServiceRemoveUserRequest() { UserId = id }
+        );
+
+        return Ok(response);
+    }
+
     [HttpPost("block-user"), Authorize(Policy = AuthPolicy.OnlyAdmin)]
     public async Task<IActionResult> BlockUser([FromBody] UserControllerBlockUserRequest request)
     {

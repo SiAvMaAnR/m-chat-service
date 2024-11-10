@@ -41,6 +41,12 @@ public class UserBS : DomainService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task RemoveUserAsync(User user)
+    {
+        _unitOfWork.User.Delete(user);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task ConfirmRegistrationAsync(Confirmation confirmation)
     {
         if (confirmation.ExpirationDate < DateTime.Now)

@@ -43,7 +43,7 @@ public class ChannelServiceAccountChannelListAdapter : ChannelServiceAccountChan
             if (chatPartner != null)
             {
                 _imagePath = chatPartner.Image;
-                Name = chatPartner.Login;
+                Name = channel.Name ?? chatPartner.Login;
             }
         }
         else
@@ -95,7 +95,7 @@ public class ChannelServiceAccountChannelAdapter : ChannelServiceAccountChannelR
             if (chatPartner != null)
             {
                 _imagePath = chatPartner.Image;
-                Name = chatPartner.Login;
+                Name = channel.Name ?? chatPartner.Login;
                 UserActivityStatus = chatPartner.ActivityStatus;
                 UserLastOnlineAt = chatPartner.LastOnlineAt;
             }

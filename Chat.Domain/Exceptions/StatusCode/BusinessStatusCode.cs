@@ -10,6 +10,4 @@ public enum BusinessStatusCode
     CommonE006,
     AuthE001,
     AuthE002,
-    AuthE003,
-    AuthE004,
 }

@@ -9,7 +9,6 @@ using Chat.Domain.Entities.Messages;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Services;
 using Chat.Domain.Services.ChatService;
-using Chat.Domain.Shared.Models;
 using Chat.Infrastructure.Services.AIService;
 using Chat.Infrastructure.Services.AIService.Models;
 using Chat.Persistence.Extensions;
@@ -73,14 +72,14 @@ public class ChatService : BaseService, IChatService
 
         if (aiProfileId != null)
         {
-            var aiMessage = new AIMessage() { Content = message.Text ?? "", Role = "user" };
+            IEnumerable<Message> messages = await _chatBS.MessagesForAIAsync(request.ChannelId);
 
             _aiIS.CreateMessage(
                 new AIIServiceCreateMessageRequest()
                 {
                     ChannelId = request.ChannelId,
                     ProfileId = aiProfileId.Value,
-                    Messages = [aiMessage]
+                    Messages = messages.AdaptForAI()
                 }
             );
         }
@@ -126,19 +125,21 @@ public class ChatService : BaseService, IChatService
         ChatServiceReadMessageRequest request
     )
     {
+        int accountId = request.IsAIBot ? await _chatBS.GetAIBotId() : AccountId;
+
         IEnumerable<Message> readMessages = await _chatBS.ReadMessagesAsync(
             request.ChannelId,
             request.MessageId,
-            AccountId
+            accountId
         );
 
         IEnumerable<string> userIds = await _chatBS.GetUserIdsByChannelIdAsync(
-            AccountId,
+            accountId,
             request.ChannelId
         );
 
         int unreadMessagesCount = await _chatBS.GetUnreadMessagesCountAsync(
-            AccountId,
+            accountId,
             request.ChannelId
         );
 

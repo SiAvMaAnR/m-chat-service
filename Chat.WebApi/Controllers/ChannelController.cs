@@ -32,6 +32,7 @@ public class ChannelController : ControllerBase
                 new ChannelServiceCreateDirectChannelRequest()
                 {
                     AccountId = request.AccountId,
+                    Name = request.Name,
                     AIProfileId = request.AIProfileId,
                 }
             );

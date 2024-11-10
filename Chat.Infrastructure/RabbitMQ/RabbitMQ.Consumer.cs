@@ -7,32 +7,55 @@ namespace Chat.Infrastructure.RabbitMQ;
 
 public class RabbitMQConsumer : RabbitMQBase, IRabbitMQConsumer
 {
+    private readonly IRabbitMQProducer _producer;
     private readonly EventingBasicConsumer _consumer;
     private readonly ILogger<RabbitMQConsumer> _logger;
 
-    public RabbitMQConsumer(IAppSettings appSettings, ILogger<RabbitMQConsumer> logger)
+    public RabbitMQConsumer(
+        IAppSettings appSettings,
+        IRabbitMQProducer producer,
+        ILogger<RabbitMQConsumer> logger
+    )
         : base(appSettings)
     {
-        _logger = logger;
+        _producer = producer;
         _consumer = new EventingBasicConsumer(_channel);
+        _logger = logger;
     }
 
-    public void AddListener(string queueName, Func<object?, BasicDeliverEventArgs, Task> handler)
+    public void AddListener(string queueName, Func<object?, DeliverEventData, Task> handler)
     {
         CreateQueue(queueName);
 
         _consumer.Received += async (sender, args) =>
         {
+            DeliverEventData? deliverEventData = null;
+
             try
             {
                 if (args.RoutingKey == queueName)
                 {
-                    await handler(sender, args);
+                    deliverEventData = GetDeliverEventData(args);
+
+                    await handler(sender, deliverEventData);
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                _logger.LogError(ex, "RabbitMQ listener: {Message}", ex.Message);
+                _logger.LogError(exception, "RabbitMQ listener: {Message}", exception.Message);
+
+                string? pattern = deliverEventData?.DeserializedResponse.Pattern;
+                string? queue = deliverEventData?.ReplyQueue;
+
+                if (pattern != null && queue != null)
+                {
+                    _producer.Emit(
+                        args.BasicProperties.ReplyTo,
+                        pattern,
+                        exception,
+                        args.BasicProperties.CorrelationId
+                    );
+                }
             }
         };
 

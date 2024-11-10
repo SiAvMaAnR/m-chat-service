@@ -151,7 +151,6 @@ public class AccountService : BaseService, IAccountService
         Account? account =
             await _accountBS.GetAccountByEmailAsync(request.Email)
             ?? throw new NotExistsException("Account not found");
-        ;
 
         return new AccountServiceAccountByEmailResponse()
         {

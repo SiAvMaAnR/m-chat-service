@@ -30,7 +30,12 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceCreateDirectChannelRequest request
     )
     {
-        await _channelBS.CreateDirectChannelAsync(AccountId, request.AccountId, request.AIProfileId);
+        await _channelBS.CreateDirectChannelAsync(
+            AccountId,
+            request.AccountId,
+            request.Name,
+            request.AIProfileId
+        );
 
         return new ChannelServiceCreateDirectChannelResponse() { IsSuccess = true };
     }
@@ -153,7 +158,10 @@ public class ChannelService : BaseService, IChannelService
                 request.PartnerId
             );
 
-            directChannel = await _channelBS.AccountDirectChannelAsync(AccountId, request.PartnerId);
+            directChannel = await _channelBS.AccountDirectChannelAsync(
+                AccountId,
+                request.PartnerId
+            );
             isNeedNotify = true;
         }
 

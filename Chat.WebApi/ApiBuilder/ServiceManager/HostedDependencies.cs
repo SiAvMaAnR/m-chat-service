@@ -1,5 +1,5 @@
 ﻿using Chat.WebApi.RMQListeners.Accounts;
-using Chat.WebApi.RMQListeners.AI;
+using Chat.WebApi.RMQListeners.Chat;
 
 namespace Chat.WebApi.ApiBuilder.ServiceManager;
 
@@ -10,7 +10,7 @@ public static partial class ServiceManagerExtension
     )
     {
         serviceCollection.AddHostedService<AccountsRMQService>();
-        serviceCollection.AddHostedService<AIRMQService>();
+        serviceCollection.AddHostedService<ChatRMQService>();
 
         return serviceCollection;
     }

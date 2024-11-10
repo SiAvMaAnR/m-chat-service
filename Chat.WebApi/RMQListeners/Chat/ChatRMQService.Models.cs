@@ -1,6 +1,6 @@
-﻿namespace Chat.WebApi.RMQListeners.AI;
+﻿namespace Chat.WebApi.RMQListeners.Chat;
 
-public partial class AIRMQService
+public partial class ChatRMQService
 {
     public class SendMessageData
     {

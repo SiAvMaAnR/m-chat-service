@@ -7,18 +7,18 @@ using Chat.WebApi.Hubs;
 using Chat.WebApi.Hubs.Common;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Chat.WebApi.RMQListeners.AI;
+namespace Chat.WebApi.RMQListeners.Chat;
 
-public partial class AIRMQService : RMQService
+public partial class ChatRMQService : RMQService
 {
     private readonly string _queueName = RMQ.Queue.Chat;
     private readonly IHubContext<ChatHub> _chatHub;
 
-    public AIRMQService(
+    public ChatRMQService(
         IRabbitMQConsumer consumer,
         IRabbitMQProducer producer,
         IServiceScopeFactory serviceScopeFactory,
-        ILogger<AIRMQService> logger,
+        ILogger<ChatRMQService> logger,
         IHubContext<ChatHub> chatHub
     )
         : base(consumer, producer, serviceScopeFactory, logger)
@@ -37,6 +37,20 @@ public partial class AIRMQService : RMQService
                 }
             );
 
+        ChatServiceReadMessageResponse readMessageResponse = await chatService.ReadMessageAsync(
+            new ChatServiceReadMessageRequest()
+            {
+                ChannelId = data.ChannelId,
+                MessageId = sendMessageResponse.Message.Id,
+                IsAIBot = true
+            }
+        );
+
+        await _chatHub
+            .Clients
+            .Users(readMessageResponse.UserIds)
+            .SendAsync(ChatHubMethod.ReadMessageResponse, readMessageResponse.ReadMessageIds);
+
         await _chatHub
             .Clients
             .Users(sendMessageResponse.UserIds)
@@ -47,10 +61,8 @@ public partial class AIRMQService : RMQService
     {
         _consumer.AddListener(
             _queueName,
-            async (_, args) =>
+            async (_, deliverEventData) =>
             {
-                DeliverEventData deliverEventData = RabbitMQBase.GetDeliverEventData(args);
-
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
 
                 RMQResponse<JsonElement> deserializedResponse =

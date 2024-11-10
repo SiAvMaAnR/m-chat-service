@@ -4,6 +4,7 @@ using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Specification;
 
 namespace Chat.Domain.Services.ChannelService;
 
@@ -15,16 +16,20 @@ public class ChannelBS : DomainService
     public async Task<Channel> CreateDirectChannelAsync(
         int firstAccountId,
         int secondAccountId,
+        string? name = null,
         int? aiProfileId = null
     )
     {
+        ISingleSpecification<Account> specification =
+            aiProfileId == null
+                ? new AccountByIdSpec(secondAccountId, true)
+                : new FirstAIBotAccountSpec();
+
         Account? firstAccount = await _unitOfWork
             .Account
             .GetAsync(new AccountByIdSpec(firstAccountId, true));
 
-        Account? secondAccount = await _unitOfWork
-            .Account
-            .GetAsync(new AccountByIdSpec(secondAccountId, true));
+        Account? secondAccount = await _unitOfWork.Account.GetAsync(specification);
 
         if (firstAccount == null || secondAccount == null)
             throw new NotExistsException("Account not found");
@@ -36,12 +41,13 @@ public class ChannelBS : DomainService
                     channel.Type == ChannelType.Direct
                     && channel.Accounts.Contains(firstAccount)
                     && channel.Accounts.Contains(secondAccount)
+                    && !(secondAccount is AIBot)
             );
 
         if (isExistsSameDirectChannel)
             throw new AlreadyExistsException("This channel already exists");
 
-        var channel = new Channel(ChannelType.Direct);
+        var channel = new Channel(ChannelType.Direct) { Name = name };
 
         channel.SetAIProfileId(aiProfileId);
 

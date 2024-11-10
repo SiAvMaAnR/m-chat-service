@@ -13,6 +13,18 @@ public class ChatBS : DomainService
     public ChatBS(IAppSettings appSettings, IUnitOfWork unitOfWork)
         : base(appSettings, unitOfWork) { }
 
+    public async Task<IEnumerable<Message>> MessagesForAIAsync(int channelId)
+    {
+        IEnumerable<Message>? messages = await _unitOfWork
+            .Message
+            .GetAllAsync(new MessagesForAISpec(channelId));
+
+        if (messages == null)
+            throw new NotExistsException("Messages not exists");
+
+        return messages;
+    }
+
     public async Task<IEnumerable<Message>> MessagesAsync(int channelId, string? searchField)
     {
         IEnumerable<Message>? messages = await _unitOfWork

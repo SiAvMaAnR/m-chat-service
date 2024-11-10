@@ -16,6 +16,6 @@ public interface IRabbitMQProducer
 
 public interface IRabbitMQConsumer
 {
-    void AddListener(string queueName, Func<object?, BasicDeliverEventArgs, Task> handler);
+    void AddListener(string queueName, Func<object?, DeliverEventData, Task> handler);
     void RemoveListener(EventHandler<BasicDeliverEventArgs> handler);
 }

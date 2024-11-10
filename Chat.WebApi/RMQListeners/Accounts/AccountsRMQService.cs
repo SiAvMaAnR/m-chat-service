@@ -81,24 +81,22 @@ public partial class AccountsRMQService : RMQService
     {
         _consumer.AddListener(
             _queueName,
-            async (_, args) =>
+            async (_, deliverEventData) =>
             {
-                DeliverEventData deliverEventData = RabbitMQBase.GetDeliverEventData(args);
-
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
+
+                RMQResponse<JsonElement> deserializedResponse =
+                    deliverEventData.DeserializedResponse;
 
                 IAccountService accountService = scope
                     .ServiceProvider
                     .GetRequiredService<IAccountService>();
 
-                RMQResponse<JsonElement> deserializedResponse =
-                    deliverEventData.DeserializedResponse;
-
                 Task task = deserializedResponse.Pattern switch
                 {
                     RMQ.AccountsQueuePattern.GetByEmail
                         => GetByEmailAsync(
-                            args.BasicProperties,
+                            deliverEventData.BasicProperties,
                             JsonSerializer.Deserialize<GetByEmailData>(
                                 deserializedResponse.Data,
                                 deliverEventData.SerializerOptions
@@ -107,7 +105,7 @@ public partial class AccountsRMQService : RMQService
                         ),
                     RMQ.AccountsQueuePattern.GetById
                         => GetByIdAsync(
-                            args.BasicProperties,
+                            deliverEventData.BasicProperties,
                             JsonSerializer.Deserialize<GetByIdData>(
                                 deserializedResponse.Data,
                                 deliverEventData.SerializerOptions
@@ -116,7 +114,7 @@ public partial class AccountsRMQService : RMQService
                         ),
                     RMQ.AccountsQueuePattern.UpdatePassword
                         => UpdatePasswordAsync(
-                            args.BasicProperties,
+                            deliverEventData.BasicProperties,
                             JsonSerializer.Deserialize<UpdatePasswordData>(
                                 deserializedResponse.Data,
                                 deliverEventData.SerializerOptions
