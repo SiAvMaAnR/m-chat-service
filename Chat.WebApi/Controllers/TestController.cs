@@ -23,6 +23,7 @@ public class TestController : ControllerBase
         aiIService.CreateMessage(
             new AIIServiceCreateMessageRequest()
             {
+                OriginalMessageId = 0,
                 ChannelId = 0,
                 ProfileId = 61,
                 Messages = [new AIMessage() { Content = "Кто такой кутахпас?", Role = "user" }]

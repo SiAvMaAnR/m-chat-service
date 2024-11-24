@@ -1,4 +1,4 @@
-using Chat.Domain.Entities.Messages;
+﻿using Chat.Domain.Entities.Messages;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Constants.Common;
 using Chat.Domain.Shared.Models;

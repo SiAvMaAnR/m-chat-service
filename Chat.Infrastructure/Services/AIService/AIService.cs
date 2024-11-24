@@ -17,6 +17,7 @@ public class AIIS : BaseIService, IAIIS
             RMQ.AIQueuePattern.CreateMessage,
             new
             {
+                request.OriginalMessageId,
                 request.ChannelId,
                 request.ProfileId,
                 request.Messages

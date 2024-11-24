@@ -4,6 +4,7 @@ using Chat.Persistence.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chat.Persistence.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20241110221753_AccountIsDeleted")]
+    partial class AccountIsDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,7 +267,7 @@ namespace Chat.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ParentMessageId")
+                    b.Property<int?>("TargetMessageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -284,7 +287,7 @@ namespace Chat.Persistence.Migrations
 
                     b.HasIndex("IsRead");
 
-                    b.HasIndex("ParentMessageId");
+                    b.HasIndex("TargetMessageId");
 
                     b.ToTable("Messages");
                 });
@@ -410,15 +413,15 @@ namespace Chat.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Chat.Domain.Entities.Messages.Message", "ParentMessage")
+                    b.HasOne("Chat.Domain.Entities.Messages.Message", "TargetMessage")
                         .WithMany("ChildMessages")
-                        .HasForeignKey("ParentMessageId");
+                        .HasForeignKey("TargetMessageId");
 
                     b.Navigation("Author");
 
                     b.Navigation("Channel");
 
-                    b.Navigation("ParentMessage");
+                    b.Navigation("TargetMessage");
                 });
 
             modelBuilder.Entity("Chat.Domain.Entities.Accounts.Account", b =>

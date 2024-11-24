@@ -124,6 +124,26 @@ public class AccountService : BaseService, IAccountService
         return new AccountServiceAccountImageResponse() { Image = image };
     }
 
+    public async Task<AccountServiceAccountByIdResponse> GetExtendedAccountByIdAsync(
+        AccountServiceAccountByIdRequest request
+    )
+    {
+        Account? account =
+            await _accountBS.GetAccountByIdAsync(request.AccountId)
+            ?? throw new NotExistsException("Account not found");
+
+        return new AccountServiceFullAccountByIdResponse()
+        {
+            Id = account.Id,
+            Login = account.Login,
+            Email = account.Email,
+            Role = account.Role,
+            PasswordHash = account.PasswordHash,
+            PasswordSalt = account.PasswordSalt,
+            IsBanned = (account as User)?.IsBanned,
+        };
+    }
+
     public async Task<AccountServiceAccountByIdResponse> GetAccountByIdAsync(
         AccountServiceAccountByIdRequest request
     )
@@ -132,14 +152,14 @@ public class AccountService : BaseService, IAccountService
             await _accountBS.GetAccountByIdAsync(request.AccountId)
             ?? throw new NotExistsException("Account not found");
 
-        return new AccountServiceAccountByIdResponse()
+        return new AccountServiceExtendedAccountByIdResponse()
         {
             Id = account.Id,
             Login = account.Login,
             Email = account.Email,
             Role = account.Role,
-            PasswordHash = account.PasswordHash,
-            PasswordSalt = account.PasswordSalt,
+            ActivityStatus = account.ActivityStatus,
+            LastOnlineAt = account.LastOnlineAt,
             IsBanned = (account as User)?.IsBanned,
         };
     }

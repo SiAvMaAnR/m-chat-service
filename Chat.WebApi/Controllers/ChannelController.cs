@@ -69,7 +69,7 @@ public class ChannelController : ControllerBase
                 {
                     Name = request.Name,
                     Members = request.Members,
-                    AIProfileId = request.AIProfileId
+                    AIProfileId = request.AIProfileId,
                 }
             );
 

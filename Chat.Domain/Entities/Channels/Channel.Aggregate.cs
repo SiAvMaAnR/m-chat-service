@@ -57,4 +57,9 @@ public partial class Channel : IAggregateRoot
     {
         AIProfileId = aiProfileId;
     }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
 }

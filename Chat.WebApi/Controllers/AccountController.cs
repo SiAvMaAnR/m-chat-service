@@ -47,6 +47,16 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("accounts/{id:int}"), Authorize]
+    public async Task<IActionResult> GetAccount([FromRoute] int id)
+    {
+        AccountServiceAccountByIdResponse response = await _accountService.GetAccountByIdAsync(
+            new AccountServiceAccountByIdRequest() { AccountId = id }
+        );
+
+        return Ok(response);
+    }
+
     [HttpGet("accounts"), Authorize]
     public async Task<IActionResult> GetAccounts(
         [FromQuery] AccountControllerAccountsRequest request

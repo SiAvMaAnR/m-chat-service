@@ -32,6 +32,7 @@ public partial class ChatRMQService : RMQService
             await chatService.CreateAIMessageAsync(
                 new ChatServiceCreateAIMessageRequest()
                 {
+                    OriginalMessageId = data.OriginalMessageId,
                     ChannelId = data.ChannelId,
                     Message = data.Message
                 }

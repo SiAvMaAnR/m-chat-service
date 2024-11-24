@@ -5,6 +5,11 @@ namespace Chat.Domain.Entities.Messages;
 
 public partial class Message : IAggregateRoot
 {
+    public void SetParentMessageId(int? messageId)
+    {
+        ParentMessageId = messageId;
+    }
+
     public void AddChildMessage(Message message)
     {
         ChildMessages.Add(message);

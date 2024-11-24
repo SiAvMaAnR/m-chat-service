@@ -43,9 +43,10 @@ public partial class AccountsRMQService : RMQService
         IAccountService accountService
     )
     {
-        AccountServiceAccountByIdResponse response = await accountService.GetAccountByIdAsync(
-            new AccountServiceAccountByIdRequest() { AccountId = args.AccountId }
-        );
+        AccountServiceAccountByIdResponse response =
+            await accountService.GetExtendedAccountByIdAsync(
+                new AccountServiceAccountByIdRequest() { AccountId = args.AccountId, }
+            );
 
         _producer.Emit(
             basicProperties.ReplyTo,

@@ -20,6 +20,9 @@ public interface IAccountService : IBaseService
     Task<AccountServiceAccountByIdResponse> GetAccountByIdAsync(
         AccountServiceAccountByIdRequest request
     );
+    Task<AccountServiceAccountByIdResponse> GetExtendedAccountByIdAsync(
+        AccountServiceAccountByIdRequest request
+    );
     Task<AccountServiceAccountByEmailResponse> GetAccountByEmailAsync(
         AccountServiceAccountByEmailRequest request
     );

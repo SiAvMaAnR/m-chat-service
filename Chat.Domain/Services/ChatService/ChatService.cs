@@ -83,7 +83,8 @@ public class ChatBS : DomainService
         int authorId,
         int channelId,
         string messageText,
-        IEnumerable<string> attachmentIds
+        IEnumerable<string> attachmentIds,
+        int? originalMessageId = null
     )
     {
         var message = new Message(authorId, channelId) { Text = messageText };
@@ -93,6 +94,7 @@ public class ChatBS : DomainService
             .GetAllAsync(new AttachmentsByUniqueIdsSpec(attachmentIds));
 
         message.AddAttachments(attachments.ToList());
+        message.SetParentMessageId(originalMessageId);
 
         Channel? channel = await _unitOfWork
             .Channel

@@ -30,14 +30,18 @@ public class ChannelService : BaseService, IChannelService
         ChannelServiceCreateDirectChannelRequest request
     )
     {
-        await _channelBS.CreateDirectChannelAsync(
+        Channel channel = await _channelBS.CreateDirectChannelAsync(
             AccountId,
             request.AccountId,
             request.Name,
             request.AIProfileId
         );
 
-        return new ChannelServiceCreateDirectChannelResponse() { IsSuccess = true };
+        return new ChannelServiceCreateDirectChannelResponse()
+        {
+            IsSuccess = true,
+            ChannelId = channel.Id,
+        };
     }
 
     public async Task<ChannelServiceCreatePrivateChannelResponse> CreatePrivateChannelAsync(

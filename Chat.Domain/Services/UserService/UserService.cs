@@ -43,7 +43,7 @@ public class UserBS : DomainService
 
     public async Task RemoveUserAsync(User user)
     {
-        _unitOfWork.User.Delete(user);
+        user.Delete();
         await _unitOfWork.SaveChangesAsync();
     }
 
