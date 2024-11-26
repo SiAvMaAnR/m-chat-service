@@ -1,4 +1,4 @@
-namespace Chat.Infrastructure.Services.AuthService.Models;
+﻿namespace Chat.Infrastructure.Services.AuthService.Models;
 
 public class AuthIServiceLoginRequest
 {

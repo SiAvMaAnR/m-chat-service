@@ -21,4 +21,5 @@ public partial class Channel : BaseEntity, ISoftDelete
     public int? OwnerId { get; private set; }
     public string? Image { get; set; }
     public bool IsDeleted { get; private set; } = false;
+    public int? AIProfileId { get; private set; }
 }

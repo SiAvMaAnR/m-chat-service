@@ -7,7 +7,7 @@ using Chat.Domain.Shared.Constants.Common;
 namespace Chat.Domain.Entities.Accounts;
 
 [Table("Accounts")]
-public partial class Account : BaseEntity
+public partial class Account : BaseEntity, ISoftDelete
 {
     public Account(string email, string login, byte[] passwordHash, byte[] passwordSalt)
     {
@@ -22,7 +22,9 @@ public partial class Account : BaseEntity
     public string Role { get; protected set; } = AccountRole.Public;
     public string? Image { get; set; }
     public string ActivityStatus { get; set; } = AccountStatus.Offline;
+    public bool IsDeleted { get; set; } = false;
     public DateTime LastOnlineAt { get; set; }
+
     [JsonIgnore]
     public byte[] PasswordHash { get; private set; }
 

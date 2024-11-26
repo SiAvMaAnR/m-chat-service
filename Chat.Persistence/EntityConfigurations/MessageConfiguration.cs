@@ -6,5 +6,9 @@ namespace Chat.Persistence.EntityConfigurations;
 
 internal class MessageConfiguration : IEntityTypeConfiguration<Message>
 {
-    public void Configure(EntityTypeBuilder<Message> builder) { }
+    public void Configure(EntityTypeBuilder<Message> builder)
+    {
+        builder.HasIndex(channel => channel.IsDeleted);
+        builder.HasIndex(channel => channel.IsRead);
+    }
 }

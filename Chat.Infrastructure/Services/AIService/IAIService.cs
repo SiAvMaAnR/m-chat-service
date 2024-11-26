@@ -1,3 +1,8 @@
-﻿namespace Chat.Infrastructure.Services.AIService;
+﻿using Chat.Infrastructure.Services.AIService.Models;
 
-public interface IAIIS { }
+namespace Chat.Infrastructure.Services.AIService;
+
+public interface IAIIS
+{
+    void CreateMessage(AIIServiceCreateMessageRequest request);
+}

@@ -24,8 +24,8 @@ public partial class Message : BaseEntity, ISoftDelete
     public ICollection<Message> ChildMessages { get; } = [];
     public Account? Author { get; private set; }
     public int AuthorId { get; private set; }
-    public Message? TargetMessage { get; set; }
-    public int? TargetMessageId { get; set; }
+    public Message? ParentMessage { get; private set; }
+    public int? ParentMessageId { get; private set; }
     public Channel? Channel { get; private set; }
     public int ChannelId { get; private set; }
     public ICollection<Attachment> Attachments { get; } = [];

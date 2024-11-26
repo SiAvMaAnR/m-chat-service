@@ -1,12 +1,14 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Chat.Domain.Shared.Models;
+﻿namespace Chat.Domain.Shared.Models;
 
 public class AIMessage
 {
-    [JsonPropertyName("content")]
     public required string Content { get; set; }
-
-    [JsonPropertyName("role")]
     public required string Role { get; set; }
+}
+
+public class AIRole
+{
+    public const string User = "user";
+    public const string System = "system";
+    public const string Assistant = "assistant";
 }

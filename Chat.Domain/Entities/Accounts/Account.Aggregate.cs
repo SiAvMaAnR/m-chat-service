@@ -46,4 +46,9 @@ public partial class Account : IAggregateRoot
     {
         Messages.Add(message);
     }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
 }

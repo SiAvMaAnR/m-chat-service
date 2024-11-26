@@ -1,6 +1,6 @@
 ﻿using Chat.Domain.Specification;
 
-namespace Chat.Domain.Entities.Users;
+namespace Chat.Domain.Entities.Accounts.Users;
 
 public class UserByIdSpec : Specification<User>
 {

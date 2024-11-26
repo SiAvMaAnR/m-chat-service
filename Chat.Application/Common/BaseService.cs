@@ -16,6 +16,9 @@ public abstract class BaseService(
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
     protected readonly IAppSettings _appSettings = appSettings;
     protected readonly UserIdentity _userIdentity = new(context.HttpContext?.User);
-    protected int UserId =>
-        _userIdentity.Id ?? throw new OperationNotAllowedException("Failed to get user id");
+    protected int AccountId =>
+        _userIdentity.Id ?? throw new OperationNotAllowedException("Failed to get account id");
+
+    protected string Role =>
+        _userIdentity.Role ?? throw new OperationNotAllowedException("Failed to get account role");
 }

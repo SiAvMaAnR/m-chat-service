@@ -15,5 +15,9 @@ internal class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
         builder.Property(attachment => attachment.Type).IsRequired();
         builder.Property(attachment => attachment.Name).IsRequired();
         builder.Property(attachment => attachment.Size).IsRequired();
+        builder.HasIndex(attachment => attachment.OwnerId);
+        builder.HasIndex(attachment => attachment.ChannelId);
+        builder.Property(attachment => attachment.ChannelId).IsRequired();
+        builder.HasIndex(attachment => attachment.IsDeleted);
     }
 }

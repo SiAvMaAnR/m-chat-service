@@ -1,9 +1,10 @@
 ﻿using Chat.Domain.Common;
-using Chat.Domain.Entities.Users;
+using Chat.Domain.Entities.Accounts.Users;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Services.AuthService;
 using Chat.Domain.Shared.Models;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.UserService;
 
 public class UserBS : DomainService
 {
@@ -37,6 +38,12 @@ public class UserBS : DomainService
     public async Task UnblockUserAsync(User user)
     {
         user.UpdateIsBanned(false);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task RemoveUserAsync(User user)
+    {
+        user.Delete();
         await _unitOfWork.SaveChangesAsync();
     }
 

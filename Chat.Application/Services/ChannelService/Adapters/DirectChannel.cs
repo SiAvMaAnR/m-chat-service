@@ -30,7 +30,7 @@ public class ChannelServiceDirectChannelAdapter : ChannelServiceDirectChannel
         if (chatPartner != null)
         {
             _imagePath = chatPartner.Image;
-            Name = chatPartner.Login;
+            Name = channel.Name ?? chatPartner.Login;
             UserActivityStatus = chatPartner.ActivityStatus;
             UserLastOnlineAt = chatPartner.LastOnlineAt;
         }

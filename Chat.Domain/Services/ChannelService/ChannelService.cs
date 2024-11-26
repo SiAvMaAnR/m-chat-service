@@ -1,25 +1,35 @@
 ﻿using Chat.Domain.Common;
 using Chat.Domain.Entities.Accounts;
+using Chat.Domain.Entities.Accounts.AIBots;
 using Chat.Domain.Entities.Channels;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Specification;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.ChannelService;
 
 public class ChannelBS : DomainService
 {
     public ChannelBS(IAppSettings appSettings, IUnitOfWork unitOfWork)
         : base(appSettings, unitOfWork) { }
 
-    public async Task<Channel> CreateDirectChannelAsync(int firstAccountId, int secondAccountId)
+    public async Task<Channel> CreateDirectChannelAsync(
+        int firstAccountId,
+        int secondAccountId,
+        string? name = null,
+        int? aiProfileId = null
+    )
     {
+        ISingleSpecification<Account> specification =
+            aiProfileId == null
+                ? new AccountByIdSpec(secondAccountId, true)
+                : new FirstAIBotAccountSpec();
+
         Account? firstAccount = await _unitOfWork
             .Account
             .GetAsync(new AccountByIdSpec(firstAccountId, true));
 
-        Account? secondAccount = await _unitOfWork
-            .Account
-            .GetAsync(new AccountByIdSpec(secondAccountId, true));
+        Account? secondAccount = await _unitOfWork.Account.GetAsync(specification);
 
         if (firstAccount == null || secondAccount == null)
             throw new NotExistsException("Account not found");
@@ -31,14 +41,28 @@ public class ChannelBS : DomainService
                     channel.Type == ChannelType.Direct
                     && channel.Accounts.Contains(firstAccount)
                     && channel.Accounts.Contains(secondAccount)
+                    && !(secondAccount is AIBot)
             );
 
         if (isExistsSameDirectChannel)
             throw new AlreadyExistsException("This channel already exists");
 
-        var channel = new Channel(ChannelType.Direct);
+        var channel = new Channel(ChannelType.Direct) { Name = name };
 
-        channel.AddAccounts([firstAccount, secondAccount]);
+        channel.SetAIProfileId(aiProfileId);
+
+        List<Account> memberList = [firstAccount, secondAccount];
+
+        if (aiProfileId != null)
+        {
+            AIBot aiBotAccount =
+                await _unitOfWork.AIBot.GetAsync(new FirstAIBotSpec())
+                ?? throw new NotExistsException("AIBot not found");
+
+            memberList.Add(aiBotAccount);
+        }
+
+        channel.AddAccounts(memberList);
 
         await _unitOfWork.Channel.AddAsync(channel);
         await _unitOfWork.SaveChangesAsync();
@@ -49,7 +73,8 @@ public class ChannelBS : DomainService
     public async Task<Channel> CreatePrivateChannelAsync(
         int accountId,
         string channelName,
-        IEnumerable<int> members
+        IEnumerable<int> members,
+        int? aiProfileId = null
     )
     {
         Account myAccount =
@@ -65,6 +90,7 @@ public class ChannelBS : DomainService
 
         var channel = new Channel(ChannelType.Private) { Name = channelName };
 
+        channel.SetAIProfileId(aiProfileId);
         channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
@@ -72,7 +98,18 @@ public class ChannelBS : DomainService
             .Account
             .GetAllAsync(new AccountsByIdsSpec(members));
 
-        channel.AddAccounts(accounts.ToList());
+        var accountList = accounts.ToList();
+
+        if (aiProfileId != null)
+        {
+            AIBot aiBotAccount =
+                await _unitOfWork.AIBot.GetAsync(new FirstAIBotSpec())
+                ?? throw new NotExistsException("AIBot not found");
+
+            accountList.Add(aiBotAccount);
+        }
+
+        channel.AddAccounts(accountList);
 
         await _unitOfWork.Channel.AddAsync(channel);
         await _unitOfWork.SaveChangesAsync();
@@ -83,7 +120,8 @@ public class ChannelBS : DomainService
     public async Task<Channel> CreatePublicChannelAsync(
         int accountId,
         string channelName,
-        IEnumerable<int> members
+        IEnumerable<int> members,
+        int? aiProfileId = null
     )
     {
         Account myAccount =
@@ -99,6 +137,7 @@ public class ChannelBS : DomainService
 
         var channel = new Channel(ChannelType.Public) { Name = channelName };
 
+        channel.SetAIProfileId(aiProfileId);
         channel.SetOwner(accountId);
         channel.AddAccount(myAccount);
 
@@ -106,7 +145,18 @@ public class ChannelBS : DomainService
             .Account
             .GetAllAsync(new AccountsByIdsSpec(members));
 
-        channel.AddAccounts(accounts.ToList());
+        var accountList = accounts.ToList();
+
+        if (aiProfileId != null)
+        {
+            AIBot aiBotAccount =
+                await _unitOfWork.AIBot.GetAsync(new FirstAIBotSpec())
+                ?? throw new NotExistsException("AIBot not found");
+
+            accountList.Add(aiBotAccount);
+        }
+
+        channel.AddAccounts(accountList);
 
         await _unitOfWork.Channel.AddAsync(channel);
         await _unitOfWork.SaveChangesAsync();

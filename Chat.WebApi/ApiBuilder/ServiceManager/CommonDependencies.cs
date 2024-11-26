@@ -1,8 +1,10 @@
 ﻿using Chat.Application.Common;
 using Chat.Persistence.DBContext;
 using Chat.WebApi.Common;
+using Chat.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chat.WebApi.ApiBuilder.ServiceManager;
@@ -14,10 +16,11 @@ public static partial class ServiceManagerExtension
         IConfiguration config
     )
     {
-        string? connection = AppEnvironment.GetDBConnectionString(config);
+        string? dbConnection = AppEnvironment.GetDBConnectionString(config);
+        string? redisConnection = AppEnvironment.GetRedisConnectionString(config);
 
         serviceCollection.AddOptions();
-        serviceCollection.AddDbContext<EFContext>(options => options.UseSqlServer(connection));
+        serviceCollection.AddDbContext<EFContext>(options => options.UseSqlServer(dbConnection));
         serviceCollection.AddControllers();
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddHttpContextAccessor();
@@ -32,10 +35,15 @@ public static partial class ServiceManagerExtension
         serviceCollection.AddSignalR(
             (options) =>
             {
+                options.AddFilter<HubExceptionFilter>();
                 options.MaximumReceiveMessageSize = 25000000;
             }
         );
         serviceCollection.AddHttpClient();
+        serviceCollection.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnection;
+        });
 
         return serviceCollection;
     }

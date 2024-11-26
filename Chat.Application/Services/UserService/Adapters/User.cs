@@ -1,5 +1,5 @@
 ﻿using Chat.Application.Services.UserService.Models;
-using Chat.Domain.Entities.Users;
+using Chat.Domain.Entities.Accounts.Users;
 using Chat.Persistence.Extensions;
 
 namespace Chat.Application.Services.UserService.Adapters;

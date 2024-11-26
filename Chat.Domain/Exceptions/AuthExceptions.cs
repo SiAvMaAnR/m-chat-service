@@ -17,21 +17,6 @@ public class FailedToCreatePasswordException : BusinessException
     { }
 }
 
-public class FailedToVerifyPasswordException : BusinessException
-{
-    public FailedToVerifyPasswordException()
-        : base(
-            new ExceptionArgs()
-            {
-                ApiStatusCode = ApiStatusCode.Forbidden,
-                BusinessStatusCode = BusinessStatusCode.AuthE002,
-                SystemMessage = $"Failed to verify password",
-                ClientMessage = $"Failed to verify password"
-            }
-        )
-    { }
-}
-
 public class InvalidConfirmationException : BusinessException
 {
     public InvalidConfirmationException()
@@ -39,7 +24,7 @@ public class InvalidConfirmationException : BusinessException
             new ExceptionArgs()
             {
                 ApiStatusCode = ApiStatusCode.Forbidden,
-                BusinessStatusCode = BusinessStatusCode.AuthE003,
+                BusinessStatusCode = BusinessStatusCode.AuthE002,
                 SystemMessage = $"Invalid confirmation link",
                 ClientMessage = $"Invalid confirmation link"
             }
@@ -47,17 +32,3 @@ public class InvalidConfirmationException : BusinessException
     { }
 }
 
-public class InvalidCredentialsException : BusinessException
-{
-    public InvalidCredentialsException(string reason)
-        : base(
-            new ExceptionArgs()
-            {
-                ApiStatusCode = ApiStatusCode.Unauthorized,
-                BusinessStatusCode = BusinessStatusCode.AuthE004,
-                SystemMessage = $"Invalid credentials: {reason}",
-                ClientMessage = reason
-            }
-        )
-    { }
-}

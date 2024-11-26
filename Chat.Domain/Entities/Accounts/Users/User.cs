@@ -1,7 +1,6 @@
-﻿using Chat.Domain.Entities.Accounts;
-using Chat.Domain.Shared.Constants.Common;
+﻿using Chat.Domain.Shared.Constants.Common;
 
-namespace Chat.Domain.Entities.Users;
+namespace Chat.Domain.Entities.Accounts.Users;
 
 public partial class User : Account
 {

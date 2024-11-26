@@ -1,5 +1,7 @@
 ﻿using Chat.Domain.Shared.Models;
-using Chat.Infrastructure.RabbitMQ;
+using Chat.Infrastructure.Services.AIService;
+using Chat.Infrastructure.Services.AIService.Models;
+using Chat.Persistence.Redis;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.WebApi.Controllers;
@@ -8,24 +10,41 @@ namespace Chat.WebApi.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
-    [HttpGet("rabbit-mq")]
-    public async Task<IActionResult> TestRabbitMQ(IRabbitMQProducer rabbitMQProducer)
+    private readonly IRedisClient _redisClient;
+
+    public TestController(IRedisClient redisClient)
     {
-        AIMessage? result = await rabbitMQProducer.Emit<AIMessage>(
-            RMQ.Queue.Ai,
-            RMQ.AIQueuePattern.CreateMessage,
-            new
+        _redisClient = redisClient;
+    }
+
+    [HttpGet("rabbit-mq")]
+    public IActionResult TestRabbitMQ(IAIIS aiIService)
+    {
+        aiIService.CreateMessage(
+            new AIIServiceCreateMessageRequest()
             {
-                message = new { content = "Кто такой цицерон?", role = "user" },
-                apiKey = new
-                {
-                    model = "GigaChat",
-                    content = "NzIwYjVhNWQtODFjNC00MzFlLWFhNGEtY2ZkNjMyYWUxZWEwOjBkYTlkOTJmLTQ5ZGItNDNkMS1hOTFjLTFlZmVmMTMxOTE5Ng==",
-                },
-                temperature = 0.6,
-                messages = new List<object>(),
+                OriginalMessageId = 0,
+                ChannelId = 0,
+                ProfileId = 61,
+                Messages = [new AIMessage() { Content = "Кто такой кутахпас?", Role = "user" }]
             }
         );
+
+        return Ok();
+    }
+
+    [HttpPost("redis")]
+    public async Task<IActionResult> TestRedisSet([FromBody] string data)
+    {
+        await _redisClient.SetAsync("cache:test", data, TimeSpan.FromSeconds(5));
+
+        return Ok();
+    }
+
+    [HttpGet("redis")]
+    public async Task<IActionResult> TestRedisGet()
+    {
+        string? result = await _redisClient.GetAsync("cache:test");
 
         return Ok(result);
     }

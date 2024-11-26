@@ -22,6 +22,16 @@ public class MessagesSpec : Specification<Message>
     }
 }
 
+public class MessagesForAISpec : Specification<Message>
+{
+    public MessagesForAISpec(int channelId)
+        : base((message) => message.ChannelId == channelId)
+    {
+        AddInclude((message) => message.Author);
+        ApplyOrderBy((message) => message.CreatedAt);
+    }
+}
+
 public class UnreadMessagesSpec : Specification<Message>
 {
     public UnreadMessagesSpec(int channelId, int lastMessageId, int accountId)

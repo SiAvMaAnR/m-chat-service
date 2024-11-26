@@ -1,6 +1,6 @@
-using Chat.Infrastructure.Services.AuthService.Models;
+﻿using Chat.Infrastructure.Services.AuthService.Models;
 
-namespace Chat.Infrastructure.Services.NotificationsService;
+namespace Chat.Infrastructure.Services.AuthService;
 
 public interface IAuthIS
 {

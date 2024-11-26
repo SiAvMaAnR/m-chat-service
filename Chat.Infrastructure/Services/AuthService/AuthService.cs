@@ -1,9 +1,9 @@
-using Chat.Domain.Common;
+﻿using Chat.Domain.Common;
 using Chat.Infrastructure.RabbitMQ;
 using Chat.Infrastructure.Services.AuthService.Models;
 using Chat.Infrastructure.Services.Common;
 
-namespace Chat.Infrastructure.Services.NotificationsService;
+namespace Chat.Infrastructure.Services.AuthService;
 
 public class AuthIS : BaseIService, IAuthIS
 {
@@ -12,7 +12,7 @@ public class AuthIS : BaseIService, IAuthIS
 
     public async Task<AuthIServiceLoginResponse?> LoginAsync(AuthIServiceLoginRequest request)
     {
-        RMQResponse<AuthIServiceLoginResponse>? response = await _rabbitMQProducer.Emit<
+        RMQResponse<AuthIServiceLoginResponse>? response = await _rabbitMQProducer.SendAsync<
             RMQResponse<AuthIServiceLoginResponse>
         >(RMQ.Queue.Auth, RMQ.AuthQueuePattern.Login, new { request.Email, request.Password });
 

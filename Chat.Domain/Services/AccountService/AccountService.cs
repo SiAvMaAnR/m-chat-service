@@ -3,7 +3,7 @@ using Chat.Domain.Entities.Accounts;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Shared.Models;
 
-namespace Chat.Domain.Services;
+namespace Chat.Domain.Services.AccountService;
 
 public class AccountBS : DomainService
 {

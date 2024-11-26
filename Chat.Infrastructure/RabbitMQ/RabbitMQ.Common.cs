@@ -1,7 +1,10 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Chat.Domain.Common;
+using Chat.Domain.Exceptions;
+using Chat.Domain.Exceptions.Common;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Chat.Infrastructure.RabbitMQ;
 
@@ -10,12 +13,36 @@ public class RabbitMQBase
     protected readonly IConnection _connection;
     protected readonly IModel _channel;
     protected readonly IAppSettings _appSettings;
+    public static readonly JsonSerializerOptions JsonSerializerOptions =
+        new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public RabbitMQBase(IAppSettings appSettings)
     {
         _appSettings = appSettings;
         _connection = CreateConnection(appSettings);
         _channel = _connection.CreateModel();
+    }
+
+    public static DeliverEventData GetDeliverEventData(BasicDeliverEventArgs args)
+    {
+        byte[] body = args.Body.ToArray();
+        string bodyJson = Encoding.UTF8.GetString(body);
+
+        RMQResponse<JsonElement> deserializedResponse =
+            JsonSerializer.Deserialize<RMQResponse<JsonElement>>(bodyJson, JsonSerializerOptions)
+            ?? throw new IncorrectDataException("Failed to deserialize json");
+
+        string replyQueue = args.BasicProperties.ReplyTo;
+        string correlationId = args.BasicProperties.CorrelationId;
+
+        return new DeliverEventData()
+        {
+            BasicProperties = args.BasicProperties,
+            DeserializedResponse = deserializedResponse,
+            ReplyQueue = replyQueue,
+            CorrelationId = correlationId,
+            SerializerOptions = JsonSerializerOptions
+        };
     }
 
     protected void CreateQueue(string queue)
@@ -43,7 +70,23 @@ public class RabbitMQBase
 
     protected static byte[] MessageAdapter(object? message, string? pattern = null)
     {
-        string adaptedMessage = JsonSerializer.Serialize(new { pattern, data = message });
+        bool isException = message is Exception;
+
+        string adaptedMessage = JsonSerializer.Serialize(
+            new
+            {
+                pattern,
+                data = isException ? null : message,
+                error = isException
+                    ? new
+                    {
+                        (message as Exception)?.Message,
+                        (message as BusinessException)?.ClientMessage,
+                    }
+                    : null
+            },
+            JsonSerializerOptions
+        );
 
         return Encoding.UTF8.GetBytes(adaptedMessage);
     }
@@ -52,7 +95,7 @@ public class RabbitMQBase
     {
         try
         {
-            return JsonSerializer.Deserialize<TResponse>(content);
+            return JsonSerializer.Deserialize<TResponse>(content, JsonSerializerOptions);
         }
         catch (Exception)
         {

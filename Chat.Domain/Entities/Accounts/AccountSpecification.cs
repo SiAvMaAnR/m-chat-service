@@ -1,4 +1,5 @@
-﻿using Chat.Domain.Specification;
+﻿using Chat.Domain.Shared.Constants.Common;
+using Chat.Domain.Specification;
 
 namespace Chat.Domain.Entities.Accounts;
 
@@ -35,9 +36,19 @@ public class AccountsSpec : Specification<Account>
         : base(
             (account) =>
                 account.Id != accountId
+                && account.Role != AccountRole.AIBot
                 && (searchField == null || account.Login.Contains(searchField))
         )
     {
         ApplyOrderBy(account => account.Id);
+    }
+}
+
+public class FirstAIBotAccountSpec : Specification<Account>
+{
+    public FirstAIBotAccountSpec()
+        : base((account) => account.Role == AccountRole.AIBot)
+    {
+        ApplyTracking();
     }
 }

@@ -1,4 +1,4 @@
-namespace Chat.WebApi.Controllers.Models.Account;
+﻿namespace Chat.WebApi.Controllers.Models.Account;
 
 public class AccountControllerUploadImageRequest
 {

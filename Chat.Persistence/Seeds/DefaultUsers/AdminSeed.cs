@@ -1,5 +1,5 @@
-﻿using Chat.Domain.Entities.Admins;
-using Chat.Domain.Services;
+﻿using Chat.Domain.Entities.Accounts.Admins;
+using Chat.Domain.Services.AuthService;
 using Chat.Domain.Shared.Models;
 using Chat.Persistence.DBContext;
 
